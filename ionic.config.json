@@ -1,0 +1,7 @@
+{
+  "name": "LudjesWork",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
