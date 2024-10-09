@@ -61,4 +61,20 @@ export class ShiftsService {
     const shiftRef = collection(this.firestore, "shifts")
     return addDoc(shiftRef, shift)
   }
+
+  // async updateMultipleRecordsInTransaction(updates: {id: string, data: any}[]) {
+  //   const firestore = this.firestore.firestore;
+
+  //   try {
+  //     await firestore.runTransaction(async (transaction) => {
+  //       updates.forEach((update) => {
+  //         const docRef = firestore.collection('your-collection').doc(update.id);
+  //         transaction.update(docRef, update.data); // Transactionally update the document
+  //       });
+  //     });
+  //     console.log('Transaction successfully committed!');
+  //   } catch (error) {
+  //     console.error('Transaction failed: ', error);
+  //   }
+  // }
 }

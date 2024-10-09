@@ -6,6 +6,11 @@
         sans-serif;
 }
 
+ion-checkbox {
+    --checkbox-background-checked: green;
+    --border-color-checked:green;
+    --checkmark-color: white;
+}
 ion-toolbar {
     --min-height: 35px;
 }

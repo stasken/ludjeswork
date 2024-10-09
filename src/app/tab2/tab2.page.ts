@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { ShiftListComponent } from '../shifts/shift-list/shift-list.component';
 
 @Component({
   selector: 'app-tab2',
@@ -6,10 +7,10 @@ import { Component } from '@angular/core';
   styleUrls: ['tab2.page.scss']
 })
 export class Tab2Page {
+  @ViewChild(ShiftListComponent) shiftListComponent!: ShiftListComponent;
 
-  constructor() {}
-
-  saveShifts() {
-    console.log('Shifts saved:');
+  callSaveMethod() {
+    this.shiftListComponent.saveAll();
   }
+  constructor() {}
 }

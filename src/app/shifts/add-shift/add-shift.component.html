@@ -4,9 +4,9 @@
     <ion-item>
       <ion-label position="floating">Platform</ion-label>
       <ion-select formControlName="platform">
-        <ion-select-option value="X">X-Care</ion-select-option>
-        <ion-select-option value="Care">Caresquare</ion-select-option>
-        <ion-select-option value="Click">Clickcare</ion-select-option>
+        <ion-select-option value="X-Care">X-Care</ion-select-option>
+        <ion-select-option value="Caresquare">Caresquare</ion-select-option>
+        <ion-select-option value="Clickcare">Clickcare</ion-select-option>
       </ion-select>
     </ion-item>
 
@@ -43,11 +43,11 @@
 
     <!-- Accepted Checkbox -->
     <ion-item>
-      <ion-label position="">Reeds geaccepteerd?</ion-label>
+      <ion-label>Reeds geaccepteerd?</ion-label>
       <ion-checkbox formControlName="accepted"></ion-checkbox>
     </ion-item>
 
     <!-- Submit Button -->
-    <ion-button expand="full" type="submit" [disabled]="!shiftForm.valid">Voeg toe</ion-button>
+    <ion-button class="btn-add" expand="full" type="submit" [disabled]="!shiftForm.valid">Voeg toe</ion-button>
   </form>
 </ion-content>

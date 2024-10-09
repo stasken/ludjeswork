@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Tab2Page } from './tab2.page';
-import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
 
 import { Tab2PageRoutingModule } from './tab2-routing.module';
 import { ShiftListComponent } from '../shifts/shift-list/shift-list.component';
@@ -14,7 +13,6 @@ import { ShiftItemComponent } from '../shifts/shift-item/shift-item.component';
     IonicModule,
     CommonModule,
     FormsModule,
-    ExploreContainerComponentModule,
     Tab2PageRoutingModule
   ],
   declarations: [Tab2Page,ShiftListComponent,ShiftItemComponent]
