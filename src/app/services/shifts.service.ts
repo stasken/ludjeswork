@@ -23,9 +23,11 @@ export class ShiftsService {
     querySnapshot.forEach((doc) => {
       console.log(doc);
 
-      let shift = doc.data() as Shift; // Cast to Workday type
+      let shift = doc.data() as Shift; 
+      console.log("allshift");
+      console.log(shift);
       shift.id = doc.id; // Add the document ID to the object
-      shiftArray.push(shift); // Push to array
+      shiftArray.push(shift); 
     });
 
     return shiftArray; // Return the array of workdays
@@ -45,8 +47,11 @@ export class ShiftsService {
     // Process the query results and add them to the array
     querySnapshot.forEach((doc) => {
       let shift = doc.data() as Shift; // Cast document data to shift
+      console.log("futreshift");
+      console.log(shift);
+      
       shift.id = doc.id; // Add document ID to the object
-      futureShifts.push(shift); // Add to the array
+      futureShifts.push(shift); 
     });
 
     return futureShifts;

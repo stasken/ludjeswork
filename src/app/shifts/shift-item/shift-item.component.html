@@ -1,0 +1,29 @@
+<ion-card class="shift-item">
+  <ion-card-header>
+    <ion-card-title class="date">{{ dateToString }}</ion-card-title>
+    <ion-card-title class="time">{{ timeToString }}</ion-card-title>
+    <ion-card-subtitle class="location">{{ shift.location }}</ion-card-subtitle>
+    <ion-card-subtitle>{{ shift.platform }}</ion-card-subtitle>
+  </ion-card-header>
+
+  <ion-card-content>
+    <div class='adjustableInfo'>
+      <div class="earnings">
+        <span>€</span>
+        <ion-input type="number" [(ngModel)]="shift.earnings" (ionChange)="onShiftChange()"></ion-input>
+      </div>
+      <div class="break">
+        <span>◷</span>
+        <ion-input type="number" [(ngModel)]="shift.break" (ionChange)="onShiftChange()"></ion-input>
+        <span>min</span>
+      </div>
+    </div>
+
+    <hr />
+
+    <ion-label *ngIf="shift.accepted">Geaccepteerd</ion-label>
+    <ion-label *ngIf="!shift.accepted">Aangevraagd</ion-label>
+    <ion-toggle [(ngModel)]="shift.accepted" (ionChange)="onShiftChange()"></ion-toggle>
+
+  </ion-card-content>
+</ion-card>

@@ -1,28 +1,7 @@
-<ion-list
-*ngIf="futureShifts.length > 0"
-class="ios list-ios hydrated"
-class="user-list"
->
-<ion-item *ngFor="let shift of futureShifts" class="user-list-item">
-  <div class="item">
-    <div class="name">
-      <ion-icon name="person-outline"></ion-icon>
-      <h5>
-        <strong> {{shift.location}}</strong>
-      </h5>
-      <ion-icon name="checkmark-done-outline" *ngIf="shift.accepted" class="finished-icon"></ion-icon>
-    </div>
-    <div class="time">
-      <ion-icon name="time-outline"></ion-icon>
-      <p>{{shift.startdate | date:'medium'}} - {{shift.enddate | date:'HH:mm'}}</p>
-    </div>
-    <div class="money">
-      <ion-icon name="wallet-outline"></ion-icon>
-      <p>€ {{shift.earnings}}</p>
-    </div>
-    <div class="count">
-      <p>Minuten pauze: {{shift.break}}</p>
-    </div>
-  </div>
-</ion-item>
+<ion-list>
+  <app-shift-item
+    *ngFor="let shift of futureShifts; let i = index"
+    [shift]="shift"
+    (updateShift)="futureShifts[i] = $event"
+  ></app-shift-item>
 </ion-list>

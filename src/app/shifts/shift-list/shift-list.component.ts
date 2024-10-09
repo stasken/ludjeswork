@@ -36,8 +36,10 @@ export class ShiftListComponent  implements OnInit {
   constructor(private shiftService: ShiftsService) { }
 
   ngOnInit() {
-    this.shiftService.getAllFutureShifts().then((res) => {
+    this.shiftService.getAllShifts().then((res) => {
       res.forEach((shift) => {
+        console.log(typeof shift.enddate);
+        
         let shiftItem: ShiftItem = new ShiftItem(shift.location, shift.platform, shift.accepted, shift.break, shift.earnings, shift.enddate.toDate(), shift.startdate.toDate());
         this.futureShifts.push(shiftItem);
       })

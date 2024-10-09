@@ -7,6 +7,7 @@ import { ExploreContainerComponentModule } from '../explore-container/explore-co
 
 import { Tab2PageRoutingModule } from './tab2-routing.module';
 import { ShiftListComponent } from '../shifts/shift-list/shift-list.component';
+import { ShiftItemComponent } from '../shifts/shift-item/shift-item.component';
 
 @NgModule({
   imports: [
@@ -16,6 +17,6 @@ import { ShiftListComponent } from '../shifts/shift-list/shift-list.component';
     ExploreContainerComponentModule,
     Tab2PageRoutingModule
   ],
-  declarations: [Tab2Page,ShiftListComponent]
+  declarations: [Tab2Page,ShiftListComponent,ShiftItemComponent]
 })
 export class Tab2PageModule {}
