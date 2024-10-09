@@ -1,0 +1,62 @@
+<ion-content>
+  <form [formGroup]="shiftForm" (ngSubmit)="onSubmit()">
+    <!-- Date Picker -->
+    <ion-item>
+      <ion-label position="floating">Datum shift</ion-label>
+      <ion-datetime presentation="date" [preferWheel]="true" formControlName="date"></ion-datetime>
+    </ion-item>
+
+    <!-- Start Time Picker -->
+    <ion-item>
+      <ion-label position="floating">Starttijd</ion-label>
+      <ion-datetime
+        display-format="HH:mm"
+        picker-format="HH:mm"
+        formControlName="startHour"
+        presentation="time"
+      ></ion-datetime>
+    </ion-item>
+
+    <!-- End Time Picker -->
+    <ion-item>
+      <ion-label position="floating">Eindtijd</ion-label>
+      <ion-datetime
+        display-format="HH:mm"
+        picker-format="HH:mm"
+        formControlName="endHour"
+        presentation="time"
+      ></ion-datetime>
+    </ion-item>
+
+    <!-- Break in Minutes -->
+    <ion-item>
+      <ion-label position="floating">Minuten pauze</ion-label>
+      <ion-input type="number" formControlName="break"></ion-input>
+    </ion-item>
+
+    <!-- Platform Dropdown -->
+    <ion-item>
+      <ion-label position="floating">Platform</ion-label>
+      <ion-select formControlName="platform">
+        <ion-select-option value="Platform1">Platform 1</ion-select-option>
+        <ion-select-option value="Platform2">Platform 2</ion-select-option>
+        <ion-select-option value="Platform3">Platform 3</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- Amount of Money Earned -->
+    <ion-item>
+      <ion-label position="floating">Loon</ion-label>
+      <ion-input type="number" formControlName="amountEarned"></ion-input>
+    </ion-item>
+
+    <!-- Accepted Checkbox -->
+    <ion-item>
+      <ion-label position="floating">Geaccepteerd</ion-label>
+      <ion-checkbox formControlName="accepted"></ion-checkbox>
+    </ion-item>
+
+    <!-- Submit Button -->
+    <ion-button expand="full" type="submit" [disabled]="!shiftForm.valid">Submit</ion-button>
+  </form>
+</ion-content>
