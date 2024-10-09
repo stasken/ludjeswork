@@ -1,39 +1,5 @@
 <ion-content>
   <form [formGroup]="shiftForm" (ngSubmit)="onSubmit()">
-    <!-- Date Picker -->
-    <ion-item>
-      <ion-label position="floating">Datum shift</ion-label>
-      <ion-datetime presentation="date" [preferWheel]="true" formControlName="date"></ion-datetime>
-    </ion-item>
-
-    <!-- Start Time Picker -->
-    <ion-item>
-      <ion-label position="floating">Starttijd</ion-label>
-      <ion-datetime
-        display-format="HH:mm"
-        picker-format="HH:mm"
-        formControlName="startHour"
-        presentation="time"
-      ></ion-datetime>
-    </ion-item>
-
-    <!-- End Time Picker -->
-    <ion-item>
-      <ion-label position="floating">Eindtijd</ion-label>
-      <ion-datetime
-        display-format="HH:mm"
-        picker-format="HH:mm"
-        formControlName="endHour"
-        presentation="time"
-      ></ion-datetime>
-    </ion-item>
-
-    <!-- Break in Minutes -->
-    <ion-item>
-      <ion-label position="floating">Minuten pauze</ion-label>
-      <ion-input type="number" formControlName="break"></ion-input>
-    </ion-item>
-
     <!-- Platform Dropdown -->
     <ion-item>
       <ion-label position="floating">Platform</ion-label>
@@ -44,10 +10,35 @@
       </ion-select>
     </ion-item>
 
+    <!-- Platform Dropdown -->
+    <ion-item>
+      <ion-label position="floating">Locatie</ion-label>
+      <ion-input type="text" formControlName="location"></ion-input>
+    </ion-item>
+
+    <!-- Date Picker -->
+    <ion-item>
+      <ion-label position="floating">Startdatum & uur</ion-label>
+      <ion-datetime [preferWheel]="true" formControlName="startDate"></ion-datetime>
+    </ion-item>
+
+    <!-- End Time Picker -->
+    <ion-item>
+      <ion-label position="floating">Einduur</ion-label>
+      <ion-datetime display-format="HH:mm" picker-format="HH:mm" formControlName="endDate"
+        presentation="time"></ion-datetime>
+    </ion-item>
+
+    <!-- Break in Minutes -->
+    <ion-item>
+      <ion-label position="floating">Aantal minuten pauze</ion-label>
+      <ion-input type="number" formControlName="break"></ion-input>
+    </ion-item>
+
     <!-- Amount of Money Earned -->
     <ion-item>
-      <ion-label position="floating">Loon</ion-label>
-      <ion-input type="number" formControlName="amountEarned"></ion-input>
+      <ion-label position="floating">Verdienste</ion-label>
+      <ion-input type="number" formControlName="earnings"></ion-input>
     </ion-item>
 
     <!-- Accepted Checkbox -->
@@ -57,6 +48,6 @@
     </ion-item>
 
     <!-- Submit Button -->
-    <ion-button expand="full" type="submit" [disabled]="!shiftForm.valid">Submit</ion-button>
+    <ion-button expand="full" type="submit" [disabled]="!shiftForm.valid">Voeg toe</ion-button>
   </form>
 </ion-content>

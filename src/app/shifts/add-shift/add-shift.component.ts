@@ -20,12 +20,12 @@ export class AddShiftComponent implements OnInit {
 
   initializeForm() {
     this.shiftForm = this.fb.group({
-      date: ['', Validators.required],
-      startHour: ['', Validators.required], 
-      endHour: ['', Validators.required],
-      break: [0, [Validators.required, Validators.min(0)]],
       platform: ['', Validators.required],
-      amountEarned: [0, [Validators.required, Validators.min(0)]],
+      location: ['', Validators.required],
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      break: ['', [Validators.required, Validators.min(0)]],
+      earnings: ['', [Validators.required, Validators.min(0)]],
       accepted: [false]
     });
   }
@@ -34,18 +34,16 @@ export class AddShiftComponent implements OnInit {
     if (this.shiftForm.valid) {
       console.log(this.shiftForm.value);
       await this.shiftService.addShift({
-        location: "tring",
-        platform: "string",
-        accepted: false,
-        break: 30,
-        earnings: 500,
-        enddate: Timestamp.now(),
-        startdate: Timestamp.now()
+        location: this.shiftForm.get("location")?.value,
+        platform: this.shiftForm.get("platform")?.value,
+        accepted: this.shiftForm.get("accepted")?.value,
+        break: this.shiftForm.get("break")?.value,
+        earnings: this.shiftForm.get("earnings")?.value,
+        enddate: this.shiftForm.get("endDate")?.value,
+        startdate: this.shiftForm.get("startDate")?.value
       }).then((res) => {
         console.log(res)
-        console.log("x")
       }).catch((error) => {
-        console.log("err");
         console.log(error)
       })
     }
