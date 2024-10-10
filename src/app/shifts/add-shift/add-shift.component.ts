@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Timestamp } from '@angular/fire/firestore';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CalculationService } from 'src/app/services/calculation-service';
 import { ShiftsService } from 'src/app/services/shifts.service';
-import { Shift } from 'src/models/shift';
 
 @Component({
   selector: 'app-add-shift',
@@ -13,10 +13,19 @@ import { Shift } from 'src/models/shift';
 export class AddShiftComponent implements OnInit {
   shiftForm!: FormGroup;
 
-  constructor(private fb: FormBuilder, private shiftService: ShiftsService, private router: Router) { }
+  totalMinutes: number = 0;
+  startDate!: Date;
+  endDate!: Date;
+  currentBreakMinutes: number = 0;
+  selectedPlatform!: string;
+  earnings: number = 0;
+  earningsNetto: number = 0;
+
+  constructor(private fb: FormBuilder, private shiftService: ShiftsService, private calculations: CalculationService, private router: Router, private changeDetector: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.initializeForm();
+    this.subscribeToFormChanges();
   }
 
   initializeForm() {
@@ -30,10 +39,53 @@ export class AddShiftComponent implements OnInit {
       accepted: [false]
     });
   }
+  subscribeToFormChanges() {
+    this.shiftForm.get('platform')?.valueChanges.subscribe((value) => {
+      this.selectedPlatform = value;
+      this.earningsNetto = this.calculations.calculateEarnings(this.endDate, this.startDate, this.totalMinutes, this.currentBreakMinutes, this.selectedPlatform, this.earnings);
+      this.changeDetector.detectChanges();
+    });
+    this.shiftForm.get('earnings')?.valueChanges.subscribe((value) => {
+      this.earnings = value;
+      this.earningsNetto = this.calculations.calculateEarnings(this.endDate, this.startDate, this.totalMinutes, this.currentBreakMinutes, this.selectedPlatform, this.earnings);
+      this.changeDetector.detectChanges();
+    });
+
+    this.shiftForm.get('startDate')?.valueChanges.subscribe((value) => {
+      this.startDate = new Date(value);
+      if (this.endDate) {
+        this.endDate.setMonth(new Date(value).getMonth());
+        this.endDate.setDate(new Date(value).getDate());
+      }
+      this.totalMinutes = this.calculations.calculateHours(this.endDate, this.startDate, this.currentBreakMinutes, this.selectedPlatform)
+      this.checkNettoPrice();
+    });
+    this.shiftForm.get('endDate')?.valueChanges.subscribe((value) => {
+      this.endDate = new Date(value);
+      if (this.startDate) {
+        this.endDate.setMonth(this.startDate.getMonth());
+        this.endDate.setDate(this.startDate.getDate());
+      }
+      this.totalMinutes = this.calculations.calculateHours(this.endDate, this.startDate, this.currentBreakMinutes, this.selectedPlatform)
+      this.checkNettoPrice();
+    });
+
+    this.shiftForm.get('break')?.valueChanges.subscribe((value) => {
+      this.currentBreakMinutes = value;
+      this.totalMinutes = this.calculations.calculateHours(this.endDate, this.startDate, this.currentBreakMinutes, this.selectedPlatform)
+      this.checkNettoPrice();
+    });
+  }
+
+  checkNettoPrice() {
+    if (this.selectedPlatform === 'X-Care') {
+      this.earningsNetto = this.calculations.calculatePrice(this.startDate, this.endDate, this.currentBreakMinutes, this.totalMinutes);
+      this.changeDetector.detectChanges();
+    }
+  }
 
   async onSubmit() {
     if (this.shiftForm.valid) {
-      console.log(this.shiftForm.value);
       let start = new Date(this.shiftForm.get("startDate")?.value);
       let start_timestamp = Timestamp.fromDate(start)
       let end = new Date(this.shiftForm.get("endDate")?.value);

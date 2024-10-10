@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ShiftsService } from 'src/app/services/shifts.service';
 
 export class ShiftItem {
-  id: string = "";
+  id: string;
   location: string;
   platform: string;
   accepted: boolean;
@@ -11,9 +11,10 @@ export class ShiftItem {
   enddate: Date;
   startdate: Date;
 
-  constructor(location: string, platform: string, accepted: boolean, breakMinutes: number, earnings: number,
+  constructor(id: string, location: string, platform: string, accepted: boolean, breakMinutes: number, earnings: number,
     enddate: Date, startdate: Date
   ) {
+    this.id = id;
     this.location = location;
     this.platform = platform;
     this.accepted = accepted;
@@ -33,44 +34,40 @@ export class ShiftItem {
 export class ShiftListComponent implements OnInit {
   futureShifts: ShiftItem[] = [];
   changedShifts: ShiftItem[] = [];
-  shiftMap: Map<string, ShiftItem>;
+  shiftMap!: Map<string, ShiftItem>;
 
   constructor(private shiftService: ShiftsService) {
-    this.shiftMap = new Map(this.futureShifts.map(item => [item.id, item]));
   }
 
   ngOnInit() {
     this.shiftService.getAllShifts().then((res) => {
       res.forEach((shift) => {
-        let shiftItem: ShiftItem = new ShiftItem(shift.location, shift.platform, shift.accepted, shift.break, shift.earnings, shift.enddate.toDate(), shift.startdate.toDate());
+        let shiftItem: ShiftItem = new ShiftItem(shift.id ?? "",shift.location, shift.platform, shift.accepted, shift.break, shift.earnings, shift.enddate.toDate(), shift.startdate.toDate());
         this.futureShifts.push(shiftItem);
       })
+      this.shiftMap = new Map(this.futureShifts.map(item => [item.id, item]));
     })
   }
 
   checkChanges(shift: ShiftItem) {
     const foundShift = this.shiftMap.get(shift.id);
+    
     if (foundShift) {
       const isChanged =
-        foundShift.platform !== shift.platform ||
-        foundShift.location !== shift.location ||
-        foundShift.startdate.getTime() !== shift.startdate.getTime() ||
-        foundShift.enddate.getTime() !== shift.enddate.getTime() ||
         foundShift.earnings !== shift.earnings ||
         foundShift.accepted !== shift.accepted ||
         foundShift.break !== shift.break;
 
-      // If changes are detected, add the shift to the changedShifts array
       if (isChanged) {
+        const entryIndex = this.changedShifts.findIndex(entry => entry.id === shift.id);
+        if (entryIndex > -1) {
+          this.changedShifts[entryIndex] = shift;
+        } else {
+          this.changedShifts.push(shift);
+        }
         this.changedShifts.push(shift);
       }
     }
-  }
-
-
-  saveAll() {
-    // console.log(this.changedShifts);
-    // this.shiftService.save
   }
 }
 

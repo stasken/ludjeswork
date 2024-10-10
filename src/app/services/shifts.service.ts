@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { addDoc, collection, collectionData, Firestore, getDocs, orderBy, query, Timestamp, where } from '@angular/fire/firestore';
+import { addDoc, collection, collectionData, doc, Firestore, getDocs, orderBy, query, Timestamp, updateDoc, where } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Shift } from 'src/models/shift';
+import { ShiftItem } from '../shifts/shift-list/shift-list.component';
 
 @Injectable({
   providedIn: 'root'
@@ -21,13 +22,9 @@ export class ShiftsService {
 
     // Iterate over the snapshot and push each document's data to the array
     querySnapshot.forEach((doc) => {
-      console.log(doc);
-
-      let shift = doc.data() as Shift; 
-      console.log("allshift");
-      console.log(shift);
+      let shift = doc.data() as Shift;
       shift.id = doc.id; // Add the document ID to the object
-      shiftArray.push(shift); 
+      shiftArray.push(shift);
     });
 
     return shiftArray; // Return the array of workdays
@@ -49,9 +46,9 @@ export class ShiftsService {
       let shift = doc.data() as Shift; // Cast document data to shift
       console.log("futreshift");
       console.log(shift);
-      
+
       shift.id = doc.id; // Add document ID to the object
-      futureShifts.push(shift); 
+      futureShifts.push(shift);
     });
 
     return futureShifts;
@@ -62,19 +59,13 @@ export class ShiftsService {
     return addDoc(shiftRef, shift)
   }
 
-  // async updateMultipleRecordsInTransaction(updates: {id: string, data: any}[]) {
-  //   const firestore = this.firestore.firestore;
+  updateShift(shift: ShiftItem) {
+    const shiftRef = doc(this.firestore, `shifts/${shift.id}`);
+    return updateDoc(shiftRef, {
+      accepted: shift.accepted,
+      break: shift.break,
+      earnings: shift.earnings
+    });
+  }
 
-  //   try {
-  //     await firestore.runTransaction(async (transaction) => {
-  //       updates.forEach((update) => {
-  //         const docRef = firestore.collection('your-collection').doc(update.id);
-  //         transaction.update(docRef, update.data); // Transactionally update the document
-  //       });
-  //     });
-  //     console.log('Transaction successfully committed!');
-  //   } catch (error) {
-  //     console.error('Transaction failed: ', error);
-  //   }
-  // }
 }

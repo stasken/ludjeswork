@@ -2,7 +2,7 @@
   <app-shift-item
     *ngFor="let shift of futureShifts; let i = index"
     [shift]="shift"
-    (updateShift)="changedShifts.push($event)"
+    (updateShift)="checkChanges($event)"
   ></app-shift-item>
 </ion-list>
 <!--(updateShift)="futureShifts[i] = $event"-->

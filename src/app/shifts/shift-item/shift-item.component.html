@@ -9,11 +9,11 @@
   <ion-card-content>
     <div class='adjustableInfo'>
       <div class="earnings">
-        <span>€</span>
+        <span style="font-size: 18px;">€</span>
         <ion-input type="number" [(ngModel)]="shift.earnings" (ionChange)="onShiftChange()"></ion-input>
       </div>
       <div class="break">
-        <span>◷</span>
+        <span style="font-size: 18px;">◷</span>
         <ion-input type="number" [(ngModel)]="shift.break" (ionChange)="onShiftChange()"></ion-input>
         <span>min</span>
       </div>
@@ -21,9 +21,22 @@
 
     <hr />
 
-    <ion-label *ngIf="shift.accepted">Geaccepteerd</ion-label>
-    <ion-label *ngIf="!shift.accepted">Aangevraagd</ion-label>
-    <ion-toggle [(ngModel)]="shift.accepted" (ionChange)="onShiftChange()"></ion-toggle>
+    <div class="buttons">
+
+      <div>
+        <ion-label *ngIf="shift.accepted">Geaccepteerd</ion-label>
+        <ion-label *ngIf="!shift.accepted">Aangevraagd</ion-label>
+        <ion-toggle [(ngModel)]="shift.accepted" (ionChange)="onShiftChange()"></ion-toggle>
+
+      </div>
+      <div>
+        <div class="wrapper">
+          <div class="block"><button #saveBtn class="button" (click)="saveShift(saveBtn)"><ion-icon
+                name="save-outline"></ion-icon></button></div>
+        </div>
+      </div>
+    </div>
+
 
   </ion-card-content>
 </ion-card>

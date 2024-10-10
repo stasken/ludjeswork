@@ -2,9 +2,9 @@ import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Tab1Page } from './tab1.page';
+import { AddShiftPage } from './add-shift.page';
 
-import { Tab1PageRoutingModule } from './tab1-routing.module';
+import { AddShiftPageRoutingModule } from './add-shift-routing.module';
 import { AddShiftComponent } from '../shifts/add-shift/add-shift.component';
 
 @NgModule({
@@ -12,9 +12,9 @@ import { AddShiftComponent } from '../shifts/add-shift/add-shift.component';
     IonicModule,
     CommonModule,
     FormsModule,
-    Tab1PageRoutingModule,
+    AddShiftPageRoutingModule,
     ReactiveFormsModule
   ],
-  declarations: [Tab1Page,AddShiftComponent],
+  declarations: [AddShiftPage,AddShiftComponent],
 })
-export class Tab1PageModule {}
+export class AddShiftPageModule {}

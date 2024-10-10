@@ -8,9 +8,12 @@ import { ShiftListComponent } from '../shifts/shift-list/shift-list.component';
 })
 export class Tab2Page {
   @ViewChild(ShiftListComponent) shiftListComponent!: ShiftListComponent;
+  allShifts = false;
 
-  callSaveMethod() {
-    this.shiftListComponent.saveAll();
-  }
   constructor() {}
+
+  
+  onChangeShifts() {
+    
+  }
 }
