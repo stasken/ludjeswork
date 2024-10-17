@@ -10,28 +10,33 @@
     <div class='adjustableInfo'>
       <div class="earnings">
         <span style="font-size: 18px;">€</span>
-        <ion-input type="number" [(ngModel)]="shift.earnings" (ionChange)="onShiftChange()"></ion-input>
+        <ion-input type="number" [(ngModel)]="shift.earnings" [disabled]="shift.platform === 'X-Care' || shift.platform === 'Caresquare'" (ionChange)="onShiftChange()"></ion-input>
       </div>
       <div class="break">
         <span style="font-size: 18px;">◷</span>
-        <ion-input type="number" [(ngModel)]="shift.break" (ionChange)="onShiftChange()"></ion-input>
-        <span>min</span>
+        <ion-input type="number" [(ngModel)]="shift.break" [disabled]="shift.platform === 'X-Care' || shift.platform === 'Caresquare'" (ionChange)="onShiftChange()"></ion-input>
+        <!-- <span>min</span> -->
       </div>
     </div>
 
     <hr />
 
     <div class="buttons">
+      <div>
+        <div class="wrapper">
+          <div class="block"><button #deleteBtn class="button" (click)="deleteShift(deleteBtn)"><ion-icon name="trash-outline"></ion-icon></button></div>
+        </div>
+      </div>
 
       <div>
         <ion-label *ngIf="shift.accepted">Geaccepteerd</ion-label>
         <ion-label *ngIf="!shift.accepted">Aangevraagd</ion-label>
         <ion-toggle [(ngModel)]="shift.accepted" (ionChange)="onShiftChange()"></ion-toggle>
-
       </div>
+      
       <div>
         <div class="wrapper">
-          <div class="block"><button #saveBtn class="button" (click)="saveShift(saveBtn)"><ion-icon
+          <div class="block"><button #saveBtn class="button" (click)="saveShift(saveBtn)" disabled="true"><ion-icon
                 name="save-outline"></ion-icon></button></div>
         </div>
       </div>

@@ -26,7 +26,7 @@
     .buttons {
         display: flex;
         flex-direction: row;
-        justify-content: space-around;
+        justify-content:space-between;
         align-items: center;
     }
     .adjustableInfo {
@@ -73,8 +73,8 @@
         --handle-background: #eb7769;
         --handle-background-checked: #95c34e;
 
-        --handle-width: 25px;
-        --handle-height: 27px;
+        --handle-width: 20px;
+        --handle-height: 23px;
         --handle-max-height: auto;
         --handle-spacing: 6px;
 
@@ -110,14 +110,15 @@
     }
     .buttonSuccess {
         background:#8BC34A;
+        background-color:#8BC34A;
     }
     .button {
         display: inline-block;
         margin: 20px auto;
         color: $text-light;
         font-size: 2em;
-        width: $button-width/2.5;
-        height: $button-width/2.5;
+        width: $button-width/3;
+        height: $button-width/3;
         min-width: 0;
         border-radius: 50%;
         text-align: center;
@@ -132,8 +133,8 @@
         }
 
         &.animate {
-            width: $button-width/2.5;
-            height: $button-width/2.5;
+            width: $button-width/3;
+            height: $button-width/3;
             min-width: 0;
             border-radius: 50%;
             color: transparent;

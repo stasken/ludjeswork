@@ -33,9 +33,9 @@ export class AddShiftComponent implements OnInit {
       platform: ['', Validators.required],
       location: ['', Validators.required],
       startDate: ['', Validators.required],
+      earnings: ['',],
       endDate: ['', Validators.required],
       break: ['', [Validators.required, Validators.min(0)]],
-      earnings: ['', [Validators.required, Validators.min(0)]],
       accepted: [false]
     });
   }
@@ -53,21 +53,17 @@ export class AddShiftComponent implements OnInit {
 
     this.shiftForm.get('startDate')?.valueChanges.subscribe((value) => {
       this.startDate = new Date(value);
-      if (this.endDate) {
-        this.endDate.setMonth(new Date(value).getMonth());
-        this.endDate.setDate(new Date(value).getDate());
-      }
+      this.setEndDate();
       this.totalMinutes = this.calculations.calculateHours(this.endDate, this.startDate, this.currentBreakMinutes, this.selectedPlatform)
       this.checkNettoPrice();
     });
     this.shiftForm.get('endDate')?.valueChanges.subscribe((value) => {
       this.endDate = new Date(value);
       if (this.startDate) {
-        this.endDate.setMonth(this.startDate.getMonth());
-        this.endDate.setDate(this.startDate.getDate());
+        this.setEndDate();
+        this.totalMinutes = this.calculations.calculateHours(this.endDate, this.startDate, this.currentBreakMinutes, this.selectedPlatform)
+        this.checkNettoPrice();
       }
-      this.totalMinutes = this.calculations.calculateHours(this.endDate, this.startDate, this.currentBreakMinutes, this.selectedPlatform)
-      this.checkNettoPrice();
     });
 
     this.shiftForm.get('break')?.valueChanges.subscribe((value) => {
@@ -75,6 +71,16 @@ export class AddShiftComponent implements OnInit {
       this.totalMinutes = this.calculations.calculateHours(this.endDate, this.startDate, this.currentBreakMinutes, this.selectedPlatform)
       this.checkNettoPrice();
     });
+  }
+
+  setEndDate() {
+    if (!this.startDate || !this.endDate) return;
+    let adjustedEnd = new Date(this.startDate);
+    adjustedEnd.setHours(this.endDate.getHours(), this.endDate.getMinutes(), 0, 0); // Set the correct hours and minutes
+    if (adjustedEnd <= this.startDate) {
+      adjustedEnd.setDate(adjustedEnd.getDate() + 1); // Move to the next day
+    }
+    this.endDate = adjustedEnd;
   }
 
   checkNettoPrice() {
@@ -88,14 +94,15 @@ export class AddShiftComponent implements OnInit {
     if (this.shiftForm.valid) {
       let start = new Date(this.shiftForm.get("startDate")?.value);
       let start_timestamp = Timestamp.fromDate(start)
-      let end = new Date(this.shiftForm.get("endDate")?.value);
-      let end_timestamp = Timestamp.fromDate(end)
+      // let end = new Date(this.shiftForm.get("endDate")?.value);
+      // let end_timestamp = Timestamp.fromDate(end)
+      let end_timestamp = Timestamp.fromDate(this.endDate)
       await this.shiftService.addShift({
         location: this.shiftForm.get("location")?.value,
         platform: this.shiftForm.get("platform")?.value,
         accepted: this.shiftForm.get("accepted")?.value,
         break: this.shiftForm.get("break")?.value,
-        earnings: this.shiftForm.get("earnings")?.value,
+        earnings: this.earningsNetto,
         enddate: end_timestamp,
         startdate: start_timestamp
       }).then((res) => {

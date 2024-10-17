@@ -52,6 +52,12 @@ ion-input {
     width: auto;
 }
 
+ion-input[disabled] {
+    opacity: 1 !important; 
+    pointer-events: none;
+  }
+  
+
 ion-title {
     padding-top: 0.8rem;
     padding-bottom: 1rem;

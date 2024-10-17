@@ -1,8 +1,9 @@
 <ion-list>
   <app-shift-item
-    *ngFor="let shift of futureShifts; let i = index"
+    *ngFor="let shift of currentFilteredShifts; let i = index"
     [shift]="shift"
-    (updateShift)="checkChanges($event)"
+    (updateShiftEmitter)="checkChanges($event)"
+    (deleteShiftEmitter)="deleteShift($event)"
   ></app-shift-item>
 </ion-list>
 <!--(updateShift)="futureShifts[i] = $event"-->

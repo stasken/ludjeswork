@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { ShiftsService } from 'src/app/services/shifts.service';
 
 export class ShiftItem {
@@ -34,24 +36,35 @@ export class ShiftItem {
 export class ShiftListComponent implements OnInit {
   futureShifts: ShiftItem[] = [];
   changedShifts: ShiftItem[] = [];
+  currentFilteredShifts: ShiftItem[] = [];
   shiftMap!: Map<string, ShiftItem>;
 
-  constructor(private shiftService: ShiftsService) {
+  paramsSub!: Subscription;
+
+  constructor(private shiftService: ShiftsService, private route : ActivatedRoute) {
   }
 
   ngOnInit() {
-    this.shiftService.getAllShifts().then((res) => {
+    this.paramsSub = this.route.params.subscribe(params => {
+      console.log(params);
+      this.getAllShifts();
+    })
+  }
+
+  getAllShifts() {
+    this.shiftService.getAllFutureShifts().then((res) => {
+      this.futureShifts = [];
       res.forEach((shift) => {
         let shiftItem: ShiftItem = new ShiftItem(shift.id ?? "",shift.location, shift.platform, shift.accepted, shift.break, shift.earnings, shift.enddate.toDate(), shift.startdate.toDate());
         this.futureShifts.push(shiftItem);
       })
       this.shiftMap = new Map(this.futureShifts.map(item => [item.id, item]));
+      this.currentFilteredShifts = this.futureShifts.slice(0);
     })
   }
 
   checkChanges(shift: ShiftItem) {
     const foundShift = this.shiftMap.get(shift.id);
-    
     if (foundShift) {
       const isChanged =
         foundShift.earnings !== shift.earnings ||
@@ -67,6 +80,13 @@ export class ShiftListComponent implements OnInit {
         }
         this.changedShifts.push(shift);
       }
+    }
+  }
+
+  deleteShift(shift:ShiftItem) {
+    const index = this.currentFilteredShifts.indexOf(shift, 0);
+    if (index > - 1) {
+      this.currentFilteredShifts.splice(index, 1);
     }
   }
 }

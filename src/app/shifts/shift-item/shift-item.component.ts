@@ -8,8 +8,8 @@ import { ShiftsService } from 'src/app/services/shifts.service';
 })
 export class ShiftItemComponent implements OnInit {
   @Input() shift: any;
-  @Output() updateShift = new EventEmitter<any>();
-  @Output() saveUpdateShift = new EventEmitter<any>();
+  @Output() updateShiftEmitter = new EventEmitter<any>();
+  @Output() deleteShiftEmitter = new EventEmitter<any>();
 
   dateToString!: string;
   timeToString!: string;
@@ -21,9 +21,10 @@ export class ShiftItemComponent implements OnInit {
   }
 
   onShiftChange() {
-    this.updateShift.emit(this.shift);
+    this.updateShiftEmitter.emit(this.shift);
     if (this.saveButton && this.saveButton.nativeElement) {
-      this.saveButton.nativeElement.style.background = "#88888855"
+      this.saveButton.nativeElement.disabled = false;
+      // this.saveButton.nativeElement.style.background = "#88888855"
     }
   }
 
@@ -56,13 +57,27 @@ export class ShiftItemComponent implements OnInit {
     });
   }
 
+  deleteShift(btn: HTMLButtonElement) {
+    if (window.confirm('Zeker dat je deze WB wilt verwijderen?')) {
+      this.shiftService.deleteShift(this.shift).then(() => {
+      this.deleteShiftEmitter.emit(this.shift);
+      btn.classList.add('success');
+        this.animateButton(btn, true);
+      }).catch(() => {
+        btn.classList.add('error');
+        this.animateButton(btn, false);
+      });
+    }
+  }
+
   animateButton(e: any, succes: boolean) {
     e.preventDefault;
     e.classList.remove('animate');
     e.classList.add('animate');
     if (succes) {
       setTimeout(function () {
-        e.classList.add('buttonSuccess');
+      e.classList.remove('buttonNormal');
+      e.classList.add('buttonSuccess');
       }, 1500);
     }
     setTimeout(function () {

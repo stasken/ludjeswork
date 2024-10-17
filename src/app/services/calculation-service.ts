@@ -10,9 +10,6 @@ export class CalculationService {
 
   calculateHours(endDate: Date, startDate: Date, breakMinutes: number, platform: string) {
     if (!endDate || !startDate) return 0;
-    if (endDate < startDate) {
-      endDate.setDate(endDate.getDate() + 1);
-    }
     const diffInMs = endDate.getTime() - startDate.getTime(); // Difference in milliseconds
     let totalMinutes = Math.floor(diffInMs / (1000 * 60)) - breakMinutes;
     return totalMinutes;
@@ -22,7 +19,7 @@ export class CalculationService {
     if (!selectedPlatform || (!earnings && selectedPlatform != "X-Care")) return 0;
     if (selectedPlatform === 'Caresquare') {
       this.earningsNetto = earnings * 0.93;
-    } else if (selectedPlatform === 'ClickCare') {
+    } else if (selectedPlatform === 'Clickcare') {
       this.earningsNetto = earnings;
     } else if (selectedPlatform === 'X-Care') {
       if (totalMinutes == 0) {

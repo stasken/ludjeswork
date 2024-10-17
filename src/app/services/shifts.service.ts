@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { addDoc, collection, collectionData, doc, Firestore, getDocs, orderBy, query, Timestamp, updateDoc, where } from '@angular/fire/firestore';
+import { addDoc, collection, collectionData, deleteDoc, doc, Firestore, getDocs, orderBy, query, Timestamp, updateDoc, where } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Shift } from 'src/models/shift';
 import { ShiftItem } from '../shifts/shift-list/shift-list.component';
@@ -44,9 +44,6 @@ export class ShiftsService {
     // Process the query results and add them to the array
     querySnapshot.forEach((doc) => {
       let shift = doc.data() as Shift; // Cast document data to shift
-      console.log("futreshift");
-      console.log(shift);
-
       shift.id = doc.id; // Add document ID to the object
       futureShifts.push(shift);
     });
@@ -68,4 +65,8 @@ export class ShiftsService {
     });
   }
 
+  deleteShift(shift: ShiftItem) {
+    const shiftRef = doc(this.firestore, `shifts/${shift.id}`);
+    return deleteDoc(shiftRef);
+  }
 }
