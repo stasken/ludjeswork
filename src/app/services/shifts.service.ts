@@ -16,9 +16,9 @@ export class ShiftsService {
 
     // Reference to the collection
     const shiftsRef = collection(this.firestore, 'shifts');
-
-    // Get all documents in the collection
-    const querySnapshot = await getDocs(shiftsRef);
+    const q = query(shiftsRef,
+      orderBy('startdate', 'asc'));
+    const querySnapshot = await getDocs(q);
 
     // Iterate over the snapshot and push each document's data to the array
     querySnapshot.forEach((doc) => {
@@ -49,6 +49,26 @@ export class ShiftsService {
     });
 
     return futureShifts;
+  }
+
+  async getShiftsByPeriod(begin:Date, end:Date) {
+    let shifts: Shift[] = [];
+
+    const shiftRef = collection(this.firestore, "shifts")
+    const q = query(
+      shiftRef,
+      where('startdate', '>=', begin),
+      where('startdate', '<=', end),
+      orderBy('startdate', 'asc'));
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+      let shift = doc.data() as Shift;
+      shift.id = doc.id;
+      shifts.push(shift);
+    });
+
+    return shifts;
   }
 
   addShift(shift: Shift) {

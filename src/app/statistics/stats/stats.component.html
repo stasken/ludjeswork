@@ -1,4 +1,13 @@
-<div class="filter">
+<!-- <ion-item>
+  <ion-label position="floating" class="label-datetime">Start</ion-label>
+  <ion-datetime presentation="date" [preferWheel]="true" [(ngModel)]="beginDatetime"></ion-datetime>
+</ion-item>
+<ion-item>
+  <ion-label position="floating" class="label-datetime">Einde</ion-label>
+  <ion-datetime presentation="date" [preferWheel]="true" [(ngModel)]="endDatetime"></ion-datetime>
+</ion-item> -->
+
+<div class="stats">
   <h1>Periode:
     <span (click)="showBeginDatePicker = !showBeginDatePicker"> {{ startPeriod | date:'d/M/yy' }}</span> -
     <span (click)="showEndDatePicker = !showEndDatePicker"> {{ endPeriod | date:'d/M/yy' }} </span>
@@ -15,9 +24,12 @@
     </ion-datetime>
     <ion-button class="btn-end" (click)="saveEndPeriod()">Opslaan</ion-button>
   </div>
+  <p>Aantal shiften</p>
+  <span class="statNumber">{{ countShifts }}</span>
+  <p>Totaal uren</p>
+  <span class="statNumber">{{ countHours }}</span>
+  <p>Verdiend</p>
+  <span class="statNumber">{{ earnings }}</span>
+  <p>Verdiend (plus aangevraagd)</p>
+  <span class="statNumber">{{ earningsPlusNA }}</span>
 </div>
-<ion-list>
-  <app-shift-item *ngFor="let shift of currentFilteredShifts; let i = index" [shift]="shift"
-    (updateShiftEmitter)="checkChanges($event)" (deleteShiftEmitter)="deleteShift($event)"></app-shift-item>
-</ion-list>
-<!--(updateShift)="futureShifts[i] = $event"-->

@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
+import { ShiftItem } from '../shifts/shift-list/shift-list.component';
+import { DatePipe } from '@angular/common';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CalculationService {
   earningsNetto = 0;
-  constructor() { }
+  constructor(private date: DatePipe) { }
 
 
-  calculateHours(endDate: Date, startDate: Date, breakMinutes: number, platform: string) {
+  calculateHours(endDate: Date, startDate: Date, breakMinutes: number) {
     if (!endDate || !startDate) return 0;
     const diffInMs = endDate.getTime() - startDate.getTime(); // Difference in milliseconds
     let totalMinutes = Math.floor(diffInMs / (1000 * 60)) - breakMinutes;
@@ -17,13 +19,13 @@ export class CalculationService {
 
   calculateEarnings(endDate: Date, startDate: Date, totalMinutes: number, breakMinutes: number, selectedPlatform: string, earnings: number) {
     if (!selectedPlatform || (!earnings && selectedPlatform != "X-Care")) return 0;
-    if (selectedPlatform === 'Caresquare') {
+    if (selectedPlatform === 'Clickcare') {
       this.earningsNetto = earnings * 0.93;
-    } else if (selectedPlatform === 'Clickcare') {
+    } else if (selectedPlatform === 'Caresquare') {
       this.earningsNetto = earnings;
     } else if (selectedPlatform === 'X-Care') {
       if (totalMinutes == 0) {
-        totalMinutes = this.calculateHours(endDate,startDate,breakMinutes,selectedPlatform);
+        totalMinutes = this.calculateHours(endDate, startDate, breakMinutes);
       }
       this.calculatePrice(startDate, endDate, breakMinutes, totalMinutes);
     }
@@ -42,7 +44,7 @@ export class CalculationService {
         let minutesAM = totalMinutes - minutesPM;
         this.earningsNetto = (minutesPM * (62.4 / 60)) + (minutesAM * (54 / 60));
       } else {
-        this.earningsNetto = totalMinutes  * (62.4 / 60);
+        this.earningsNetto = totalMinutes * (62.4 / 60);
       }
     } else if (day == 6) {
       const eightPM = new Date(startDate);
@@ -60,7 +62,7 @@ export class CalculationService {
     } else {
       const durations = this.calculateShiftDurationsInMinutes(startDate, endDate);
 
-      this.earningsNetto = ((durations.before7PM-currentBreakMinutes) * (40 / 60)) + (durations.between7And8PM * (48 / 60)) + (durations.after8PM * (54 / 60));
+      this.earningsNetto = ((durations.before7PM - currentBreakMinutes) * (40 / 60)) + (durations.between7And8PM * (48 / 60)) + (durations.after8PM * (54 / 60));
     }
     return this.earningsNetto;
   }
@@ -115,4 +117,46 @@ export class CalculationService {
 
   toMinutes = (duration: number) => Math.floor(duration / (1000 * 60));
 
+  checkForOverlap(start: Date, end: Date, shifts: ShiftItem[]) {
+    for (const shift of shifts) {
+      const shiftStart = shift.startdate;
+      const shiftEnd = shift.enddate;
+
+      const overlap: boolean = (start <= shiftEnd && start >= shiftStart) || (end <= shiftEnd && end >= shiftStart);
+      if (overlap) {
+        const formattedStartDate = this.date.transform(shift.startdate, 'medium');
+        const formattedEndDate = this.date.transform(shift.enddate, 'medium');
+        return {
+          status: 1,
+          statusText: `Deze shift overlapt met de shift in ${shift.location} van ${formattedStartDate} tot ${formattedEndDate}.`
+        };
+      }
+      const beforeStart = shiftStart.getTime() - (4 * 60 * 60 * 1000); // shiftEnd + 4 hours
+      const before: boolean = start.getTime() >= beforeStart && start.getTime() <= shiftStart.getTime();
+
+      if (before) {
+        const formattedStartDate = this.date.transform(shift.startdate, 'medium');
+        const formattedEndDate = this.date.transform(shift.enddate, 'medium');
+        return {
+          status: 2,
+          statusText: `Deze shift zou net voor de shift vallen in ${shift.location} die start van ${formattedStartDate} tot ${formattedEndDate} is.`
+        };
+      }
+
+      const afterEnd = shiftEnd.getTime() + (4 * 60 * 60 * 1000); // end + 4 hours
+      const after: boolean = shiftEnd.getTime() <= start.getTime() && afterEnd >= start.getTime();
+      if (after) {
+        const formattedStartDate = this.date.transform(shift.startdate, 'medium');
+        const formattedEndDate = this.date.transform(shift.enddate, 'medium');
+        return {
+          status: 3,
+          statusText: `Deze shift komt net na de shift in ${shift.location} van ${formattedStartDate} tot ${formattedEndDate} is.`
+        };
+      }
+    }
+    return {
+      status: 0,
+      statusText: ``,
+    };
+  }
 }

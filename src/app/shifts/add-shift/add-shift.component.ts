@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CalculationService } from 'src/app/services/calculation-service';
 import { ShiftsService } from 'src/app/services/shifts.service';
+import { ShiftItem } from '../shift-list/shift-list.component';
 
 @Component({
   selector: 'app-add-shift',
@@ -20,12 +21,14 @@ export class AddShiftComponent implements OnInit {
   selectedPlatform!: string;
   earnings: number = 0;
   earningsNetto: number = 0;
+  futureShifts: ShiftItem[] = [];
 
   constructor(private fb: FormBuilder, private shiftService: ShiftsService, private calculations: CalculationService, private router: Router, private changeDetector: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.initializeForm();
     this.subscribeToFormChanges();
+    this.getAllShifts();
   }
 
   initializeForm() {
@@ -38,6 +41,16 @@ export class AddShiftComponent implements OnInit {
       break: ['', [Validators.required, Validators.min(0)]],
       accepted: [false]
     });
+  }
+
+  getAllShifts() {
+    this.shiftService.getAllFutureShifts().then((res) => {
+      this.futureShifts = [];
+      res.forEach((shift) => {
+        let shiftItem: ShiftItem = new ShiftItem(shift.id ?? "", shift.location, shift.platform, shift.accepted, shift.break, shift.earnings, shift.enddate.toDate(), shift.startdate.toDate());
+        this.futureShifts.push(shiftItem);
+      })
+    })
   }
   subscribeToFormChanges() {
     this.shiftForm.get('platform')?.valueChanges.subscribe((value) => {
@@ -54,21 +67,21 @@ export class AddShiftComponent implements OnInit {
     this.shiftForm.get('startDate')?.valueChanges.subscribe((value) => {
       this.startDate = new Date(value);
       this.setEndDate();
-      this.totalMinutes = this.calculations.calculateHours(this.endDate, this.startDate, this.currentBreakMinutes, this.selectedPlatform)
+      this.totalMinutes = this.calculations.calculateHours(this.endDate, this.startDate, this.currentBreakMinutes)
       this.checkNettoPrice();
     });
     this.shiftForm.get('endDate')?.valueChanges.subscribe((value) => {
       this.endDate = new Date(value);
       if (this.startDate) {
         this.setEndDate();
-        this.totalMinutes = this.calculations.calculateHours(this.endDate, this.startDate, this.currentBreakMinutes, this.selectedPlatform)
+        this.totalMinutes = this.calculations.calculateHours(this.endDate, this.startDate, this.currentBreakMinutes)
         this.checkNettoPrice();
       }
     });
 
     this.shiftForm.get('break')?.valueChanges.subscribe((value) => {
       this.currentBreakMinutes = value;
-      this.totalMinutes = this.calculations.calculateHours(this.endDate, this.startDate, this.currentBreakMinutes, this.selectedPlatform)
+      this.totalMinutes = this.calculations.calculateHours(this.endDate, this.startDate, this.currentBreakMinutes)
       this.checkNettoPrice();
     });
   }
@@ -93,24 +106,36 @@ export class AddShiftComponent implements OnInit {
   async onSubmit() {
     if (this.shiftForm.valid) {
       let start = new Date(this.shiftForm.get("startDate")?.value);
-      let start_timestamp = Timestamp.fromDate(start)
-      // let end = new Date(this.shiftForm.get("endDate")?.value);
-      // let end_timestamp = Timestamp.fromDate(end)
-      let end_timestamp = Timestamp.fromDate(this.endDate)
-      await this.shiftService.addShift({
-        location: this.shiftForm.get("location")?.value,
-        platform: this.shiftForm.get("platform")?.value,
-        accepted: this.shiftForm.get("accepted")?.value,
-        break: this.shiftForm.get("break")?.value,
-        earnings: this.earningsNetto,
-        enddate: end_timestamp,
-        startdate: start_timestamp
-      }).then((res) => {
-        this.router.navigate(['/tabs/shiften']);
-      }).catch((error) => {
-        console.log(error)
-      })
+      let end = new Date(this.shiftForm.get("endDate")?.value);
+      let noOverlap = this.calculations.checkForOverlap(start, end, this.futureShifts);
+      if (noOverlap.status === 0) {
+        this.addShiftToDb(start,end);
+      } else if (noOverlap.status === 1) {
+        window.alert(noOverlap.statusText);
+      } else if (noOverlap.status === 2 || noOverlap.status === 3) {
+        if (window.confirm(`${noOverlap.statusText}\nZeker dat u dit wilt doen?`)) {
+          this.addShiftToDb(start,end);
+        }
+      }
     }
   }
 
+  async addShiftToDb(start: Date, end: Date) {
+    let start_timestamp = Timestamp.fromDate(start)
+    let end_timestamp = Timestamp.fromDate(end)
+
+    await this.shiftService.addShift({
+      location: this.shiftForm.get("location")?.value,
+      platform: this.shiftForm.get("platform")?.value,
+      accepted: this.shiftForm.get("accepted")?.value,
+      break: this.shiftForm.get("break")?.value,
+      earnings: this.earningsNetto,
+      enddate: end_timestamp,
+      startdate: start_timestamp
+    }).then((res) => {
+      this.router.navigate(['/tabs/shiften']);
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
 }
