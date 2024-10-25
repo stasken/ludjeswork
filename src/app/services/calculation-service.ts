@@ -25,17 +25,18 @@ export class CalculationService {
       this.earningsNetto = earnings;
     } else if (selectedPlatform === 'Zonder') {
       this.earningsNetto = earnings;
-    } else if (selectedPlatform === 'Special') {
+    } else if (selectedPlatform === 'Beeple') {
       if (totalMinutes == 0) {
         totalMinutes = this.calculateHours(endDate, startDate, breakMinutes);
       }
-      this.calculatePriceS(startDate, endDate, breakMinutes, totalMinutes);
+      this.calculatePriceBeeple(startDate, endDate, breakMinutes, totalMinutes);
     } else if (selectedPlatform === 'X-Care') {
       if (totalMinutes == 0) {
         totalMinutes = this.calculateHours(endDate, startDate, breakMinutes);
       }
       this.calculatePriceX(startDate, endDate, breakMinutes, totalMinutes);
     }
+    this.earningsNetto = Math.round(this.earningsNetto * 100) / 100;
     return this.earningsNetto;
   }
 
@@ -82,7 +83,7 @@ export class CalculationService {
    * Zaterdag (126%) = €51.66 (uren op zaterdag)
    * Zondag/feestdag (156%) = €63.96 (uren op zon-en feestdagen)
    */
-  calculatePriceS(startDate: Date, endDate: Date, currentBreakMinutes: number, totalMinutes: number) {
+  calculatePriceBeeple(startDate: Date, endDate: Date, currentBreakMinutes: number, totalMinutes: number) {
     if (!startDate || !endDate || !totalMinutes) return 0;
     let day = startDate.getDay();
 

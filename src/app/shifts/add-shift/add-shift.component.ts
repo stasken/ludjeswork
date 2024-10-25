@@ -52,6 +52,7 @@ export class AddShiftComponent implements OnInit {
       })
     })
   }
+
   subscribeToFormChanges() {
     this.shiftForm.get('platform')?.valueChanges.subscribe((value) => {
       this.selectedPlatform = value;
@@ -99,8 +100,8 @@ export class AddShiftComponent implements OnInit {
   checkNettoPrice() {
     if (this.selectedPlatform === 'X-Care') {
       this.earningsNetto = this.calculations.calculatePriceX(this.startDate, this.endDate, this.currentBreakMinutes, this.totalMinutes);
-    } else if (this.selectedPlatform ==='Special') {
-      this.earningsNetto = this.calculations.calculatePriceS(this.startDate, this.endDate, this.currentBreakMinutes, this.totalMinutes);
+    } else if (this.selectedPlatform === 'Beeple') {
+      this.earningsNetto = this.calculations.calculatePriceBeeple(this.startDate, this.endDate, this.currentBreakMinutes, this.totalMinutes);
     }
     this.changeDetector.detectChanges();
   }
@@ -111,12 +112,20 @@ export class AddShiftComponent implements OnInit {
       let end = this.endDate;
       let noOverlap = this.calculations.checkForOverlap(start, end, this.futureShifts);
       if (noOverlap.status === 0) {
-        this.addShiftToDb(start,end);
+        let day = this.startDate.getDay();
+        let startHour = this.startDate.getHours();
+        if ((day === 1 || day === 4) && startHour >= 12) {
+          if (window.confirm(`Arno moet coachen die avond. Zeker dat u dit wilt doen?`)) {
+            this.addShiftToDb(start, end);
+          }
+        } else {
+          this.addShiftToDb(start, end);
+        }
       } else if (noOverlap.status === 1) {
         window.alert(noOverlap.statusText);
       } else if (noOverlap.status === 2 || noOverlap.status === 3) {
         if (window.confirm(`${noOverlap.statusText}\nZeker dat u dit wilt doen?`)) {
-          this.addShiftToDb(start,end);
+          this.addShiftToDb(start, end);
         }
       }
     }
@@ -140,4 +149,5 @@ export class AddShiftComponent implements OnInit {
       console.log(error)
     })
   }
+  
 }

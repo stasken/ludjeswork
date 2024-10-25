@@ -1,18 +1,11 @@
-<!-- <ion-item>
-  <ion-label position="floating" class="label-datetime">Start</ion-label>
-  <ion-datetime presentation="date" [preferWheel]="true" [(ngModel)]="beginDatetime"></ion-datetime>
-</ion-item>
-<ion-item>
-  <ion-label position="floating" class="label-datetime">Einde</ion-label>
-  <ion-datetime presentation="date" [preferWheel]="true" [(ngModel)]="endDatetime"></ion-datetime>
-</ion-item> -->
-
 <div class="stats">
   <div class="filter">
-    <h1>Periode:
-      <span (click)="showBeginDatePicker = !showBeginDatePicker"> {{ startPeriod | date:'d/M/yy' }}</span> -
-      <span (click)="showEndDatePicker = !showEndDatePicker"> {{ endPeriod | date:'d/M/yy' }} </span>
-    </h1>
+    <h2>Periode:
+      <span class="date-filter-btn" (click)="showBeginDatePicker = !showBeginDatePicker"> {{ startPeriod | date:'d/M/yy'
+        }}</span> -
+      <span class="date-filter-btn" (click)="showEndDatePicker = !showEndDatePicker"> {{ endPeriod | date:'d/M/yy' }}
+      </span>
+    </h2>
     <div *ngIf="showBeginDatePicker">
       <ion-label position="floating" class="label-datetime">Begin</ion-label>
       <ion-datetime presentation="date" [preferWheel]="true" [(ngModel)]="beginDatetime">
@@ -25,8 +18,10 @@
       </ion-datetime>
       <ion-button class="btn-end" (click)="saveEndPeriod()">Opslaan</ion-button>
     </div>
-    <ion-button class="btn-previous" (click)="goToPreviousMonth()">Vorige maand</ion-button>
-    <ion-button class="btn-next" (click)="goToNextMonth()">Volgende maand</ion-button>
+    <div class="btn-month">
+      <ion-button class="btn-previous" (click)="goToPreviousMonth()">Vorige maand</ion-button>
+      <ion-button (click)="goToNextMonth()">Volgende maand</ion-button>
+    </div>
   </div>
   <p>Aantal shiften</p>
   <span class="statNumber">{{ countShifts }}</span>

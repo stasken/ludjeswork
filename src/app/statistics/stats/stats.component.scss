@@ -1,14 +1,19 @@
 .stats {
     padding-left: 1rem;
-    // padding-top: 2rem;
+
     .statNumber {
         font-size: xx-large;
         font-weight: bold;
         color: #ee83e5;
     }
 
-}
-
-.label-datetime {
-    margin-bottom: 1rem !important;
+    .label-datetime {
+        margin-bottom: 1rem !important;
+    }
+    .btn-month {
+        margin-top: 15px;
+    }
+    .btn-previous {
+        margin-right: 15px;
+    }
 }

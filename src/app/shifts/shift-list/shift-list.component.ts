@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ShiftsService } from 'src/app/services/shifts.service';
+import { Shift } from 'src/models/shift';
 
 export class ShiftItem {
   id: string;
@@ -49,9 +50,12 @@ export class ShiftListComponent implements OnInit {
 
   showBeginDatePicker = false;
   showEndDatePicker = false;
+
+  onlyPending = false;
+
   constructor(private shiftService: ShiftsService, private route: ActivatedRoute) {
     this.startPeriod = new Date();
-    this.endPeriod = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 3);
+    this.endPeriod = new Date(new Date().getFullYear(), new Date().getMonth() + 2, 0, 3); //  last day of current month
 
     this.beginDatetime = this.startPeriod.toISOString();
     this.endDatetime = this.endPeriod.toISOString();
@@ -59,32 +63,30 @@ export class ShiftListComponent implements OnInit {
 
   ngOnInit() {
     this.paramsSub = this.route.params.subscribe(params => {
-      this.getAllShifts();
+      this.getShiftsByPeriod();
     })
   }
 
-  getAllShifts() {
-    this.shiftService.getAllFutureShifts().then((res) => {
-      this.futureShifts = [];
-      res.forEach((shift) => {
-        let shiftItem: ShiftItem = new ShiftItem(shift.id ?? "", shift.location, shift.platform, shift.accepted, shift.break, shift.earnings, shift.enddate.toDate(), shift.startdate.toDate());
-        this.futureShifts.push(shiftItem);
-      })
-      this.shiftMap = new Map(this.futureShifts.map(item => [item.id, item]));
-      this.currentFilteredShifts = this.futureShifts.slice(0);
-    })
-  }
+  // getAllShifts() {
+  //   this.shiftService.getAllFutureShifts().then((res) => {
+  //     this.setCurrentShifts(res);
+  //   })
+  // }
 
   getShiftsByPeriod() {
-    this.shiftService.getShiftsByPeriod(this.startPeriod,this.endPeriod).then((res) => {
-      this.futureShifts = [];
-      res.forEach((shift) => {
-        let shiftItem: ShiftItem = new ShiftItem(shift.id ?? "", shift.location, shift.platform, shift.accepted, shift.break, shift.earnings, shift.enddate.toDate(), shift.startdate.toDate());
-        this.futureShifts.push(shiftItem);
-      })
-      this.shiftMap = new Map(this.futureShifts.map(item => [item.id, item]));
-      this.currentFilteredShifts = this.futureShifts.slice(0);
+    this.shiftService.getShiftsByPeriod(this.startPeriod, this.endPeriod).then((res) => {
+      this.setCurrentShifts(res);
     })
+  }
+
+  setCurrentShifts(shifts: Shift[]) {
+    this.futureShifts = [];
+    shifts.forEach((shift) => {
+      let shiftItem: ShiftItem = new ShiftItem(shift.id ?? "", shift.location, shift.platform, shift.accepted, shift.break, shift.earnings, shift.enddate.toDate(), shift.startdate.toDate());
+      this.futureShifts.push(shiftItem);
+    })
+    this.shiftMap = new Map(this.futureShifts.map(item => [item.id, item]));
+    this.currentFilteredShifts = this.futureShifts.slice(0);
   }
 
   checkChanges(shift: ShiftItem) {
@@ -116,6 +118,16 @@ export class ShiftListComponent implements OnInit {
     this.endPeriod = new Date(this.endDatetime);
     this.showEndDatePicker = false;
     this.getShiftsByPeriod();
+  }
+
+  changePending() {
+    if (!this.onlyPending) {
+      this.currentFilteredShifts = this.futureShifts.slice(0);
+    } else {
+      this.currentFilteredShifts = this.futureShifts.filter(shift => {
+        return shift.accepted !== this.onlyPending;
+      });
+    }
   }
 }
 

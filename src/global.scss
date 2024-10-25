@@ -53,13 +53,18 @@ ion-input {
 }
 
 ion-input[disabled] {
-    opacity: 1 !important; 
+    opacity: 1 !important;
     pointer-events: none;
-  }
-  
+}
 
 ion-title {
     padding-top: 0.8rem;
     padding-bottom: 1rem;
     background-image: linear-gradient(#121212, #171717, #1b1b1b, #202020, #242424, #2c2c2c, #282828, #242424, #202020, #1b1b1b, #171717, #121212);
+}
+
+.date-filter-btn {
+    padding: 1px 5px;
+    border: 1px solid #ee83e5;
+    border-radius: 5px;
 }

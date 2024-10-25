@@ -58,7 +58,7 @@ export class ShiftItemComponent implements OnInit {
   }
 
   deleteShift(btn: HTMLButtonElement) {
-    if (window.confirm('Zeker dat je deze WB wilt verwijderen?')) {
+    if (window.confirm('Zeker dat je deze shift wilt verwijderen?')) {
       this.shiftService.deleteShift(this.shift).then(() => {
       this.deleteShiftEmitter.emit(this.shift);
       btn.classList.add('success');
