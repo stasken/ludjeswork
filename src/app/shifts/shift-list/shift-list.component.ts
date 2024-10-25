@@ -13,6 +13,7 @@ export class ShiftItem {
   earnings: number;
   enddate: Date;
   startdate: Date;
+  completed: boolean;
 
   constructor(id: string, location: string, platform: string, accepted: boolean, breakMinutes: number, earnings: number,
     enddate: Date, startdate: Date
@@ -25,6 +26,7 @@ export class ShiftItem {
     this.earnings = earnings;
     this.enddate = enddate;
     this.startdate = startdate;
+    this.completed = this.startdate < new Date();
   }
 
 }

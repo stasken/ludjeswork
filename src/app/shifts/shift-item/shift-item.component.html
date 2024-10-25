@@ -24,7 +24,7 @@
     <div class="buttons">
       <div>
         <div class="wrapper">
-          <div class="block"><button #deleteBtn class="button" (click)="deleteShift(deleteBtn)"><ion-icon name="trash-outline"></ion-icon></button></div>
+          <div class="block"><button #deleteBtn class="button" [disabled]="shift.completed" (click)="deleteShift(deleteBtn)"><ion-icon name="trash-outline"></ion-icon></button></div>
         </div>
       </div>
 
