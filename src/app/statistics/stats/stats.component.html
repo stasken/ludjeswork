@@ -8,21 +8,25 @@
 </ion-item> -->
 
 <div class="stats">
-  <h1>Periode:
-    <span (click)="showBeginDatePicker = !showBeginDatePicker"> {{ startPeriod | date:'d/M/yy' }}</span> -
-    <span (click)="showEndDatePicker = !showEndDatePicker"> {{ endPeriod | date:'d/M/yy' }} </span>
-  </h1>
-  <div *ngIf="showBeginDatePicker">
-    <ion-label position="floating" class="label-datetime">Begin</ion-label>
-    <ion-datetime presentation="date" [preferWheel]="true" [(ngModel)]="beginDatetime">
-    </ion-datetime>
-    <ion-button class="btn-begin" (click)="saveBeginPeriod()">Opslaan</ion-button>
-  </div>
-  <div *ngIf="showEndDatePicker">
-    <ion-label position="floating" class="label-datetime">Einde</ion-label>
-    <ion-datetime presentation="date" [preferWheel]="true" [(ngModel)]="endDatetime">
-    </ion-datetime>
-    <ion-button class="btn-end" (click)="saveEndPeriod()">Opslaan</ion-button>
+  <div class="filter">
+    <h1>Periode:
+      <span (click)="showBeginDatePicker = !showBeginDatePicker"> {{ startPeriod | date:'d/M/yy' }}</span> -
+      <span (click)="showEndDatePicker = !showEndDatePicker"> {{ endPeriod | date:'d/M/yy' }} </span>
+    </h1>
+    <div *ngIf="showBeginDatePicker">
+      <ion-label position="floating" class="label-datetime">Begin</ion-label>
+      <ion-datetime presentation="date" [preferWheel]="true" [(ngModel)]="beginDatetime">
+      </ion-datetime>
+      <ion-button class="btn-begin" (click)="saveBeginPeriod()">Opslaan</ion-button>
+    </div>
+    <div *ngIf="showEndDatePicker">
+      <ion-label position="floating" class="label-datetime">Einde</ion-label>
+      <ion-datetime presentation="date" [preferWheel]="true" [(ngModel)]="endDatetime">
+      </ion-datetime>
+      <ion-button class="btn-end" (click)="saveEndPeriod()">Opslaan</ion-button>
+    </div>
+    <ion-button class="btn-previous" (click)="goToPreviousMonth()">Vorige maand</ion-button>
+    <ion-button class="btn-next" (click)="goToNextMonth()">Volgende maand</ion-button>
   </div>
   <p>Aantal shiften</p>
   <span class="statNumber">{{ countShifts }}</span>

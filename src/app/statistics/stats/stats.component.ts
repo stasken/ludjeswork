@@ -18,21 +18,23 @@ export class StatsComponent implements OnInit {
 
   paramsSub!: Subscription;
 
-  startPeriod: Date;
-  endPeriod: Date;
+  currentYear: number;
+  currentMonth: number;
 
-  beginDatetime: string;
-  endDatetime: string;
+  startPeriod!: Date;
+  endPeriod!: Date;
+
+  beginDatetime!: string;
+  endDatetime!: string;
 
   showBeginDatePicker = false;
   showEndDatePicker = false;
 
   constructor(private shiftService: ShiftsService, private calcs: CalculationService, private route: ActivatedRoute) {
-    this.startPeriod = new Date(new Date().getFullYear(), new Date().getMonth(), 1, 5);
-    this.endPeriod = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 3);
+    this.currentYear = new Date().getFullYear();
+    this.currentMonth = new Date().getMonth();
 
-    this.beginDatetime = this.startPeriod.toISOString();
-    this.endDatetime = this.endPeriod.toISOString();
+    this.setCurrentMonthPeriod()
   }
 
   ngOnInit() {
@@ -66,8 +68,37 @@ export class StatsComponent implements OnInit {
     return result;
   }
 
+  setCurrentMonthPeriod() {
+    this.startPeriod = new Date(this.currentYear, this.currentMonth, 1, 5);
+    this.endPeriod = new Date(this.currentYear, this.currentMonth + 1, 0, 3);
+
+    this.beginDatetime = this.startPeriod.toISOString();
+    this.endDatetime = this.endPeriod.toISOString();
+    this.getShiftsForPeriod();
+  }
+
+  goToPreviousMonth() {
+    this.currentMonth--;
+    if (this.currentMonth == 0) {
+      this.currentMonth = 1;
+      this.currentYear--;
+    }
+    this.setCurrentMonthPeriod();
+  }
+  
+  goToNextMonth() {
+    this.currentMonth++;
+    if (this.currentMonth + 1 == 13) {
+      this.currentMonth = 1;
+      this.currentYear++;
+    }
+    this.setCurrentMonthPeriod();
+  }
+
   saveBeginPeriod() {
     this.startPeriod = new Date(this.beginDatetime);
+    this.currentMonth = this.startPeriod.getMonth();
+    this.currentYear = this.startPeriod.getFullYear();
     this.showBeginDatePicker = false;
     this.getShiftsForPeriod();
   }

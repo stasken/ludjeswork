@@ -98,15 +98,17 @@ export class AddShiftComponent implements OnInit {
 
   checkNettoPrice() {
     if (this.selectedPlatform === 'X-Care') {
-      this.earningsNetto = this.calculations.calculatePrice(this.startDate, this.endDate, this.currentBreakMinutes, this.totalMinutes);
-      this.changeDetector.detectChanges();
+      this.earningsNetto = this.calculations.calculatePriceX(this.startDate, this.endDate, this.currentBreakMinutes, this.totalMinutes);
+    } else if (this.selectedPlatform ==='Special') {
+      this.earningsNetto = this.calculations.calculatePriceS(this.startDate, this.endDate, this.currentBreakMinutes, this.totalMinutes);
     }
+    this.changeDetector.detectChanges();
   }
 
   async onSubmit() {
     if (this.shiftForm.valid) {
-      let start = new Date(this.shiftForm.get("startDate")?.value);
-      let end = new Date(this.shiftForm.get("endDate")?.value);
+      let start = this.startDate;
+      let end = this.endDate;
       let noOverlap = this.calculations.checkForOverlap(start, end, this.futureShifts);
       if (noOverlap.status === 0) {
         this.addShiftToDb(start,end);

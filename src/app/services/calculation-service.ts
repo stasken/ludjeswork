@@ -23,16 +23,66 @@ export class CalculationService {
       this.earningsNetto = earnings * 0.93;
     } else if (selectedPlatform === 'Caresquare') {
       this.earningsNetto = earnings;
+    } else if (selectedPlatform === 'Zonder') {
+      this.earningsNetto = earnings;
+    } else if (selectedPlatform === 'Special') {
+      if (totalMinutes == 0) {
+        totalMinutes = this.calculateHours(endDate, startDate, breakMinutes);
+      }
+      this.calculatePriceS(startDate, endDate, breakMinutes, totalMinutes);
     } else if (selectedPlatform === 'X-Care') {
       if (totalMinutes == 0) {
         totalMinutes = this.calculateHours(endDate, startDate, breakMinutes);
       }
-      this.calculatePrice(startDate, endDate, breakMinutes, totalMinutes);
+      this.calculatePriceX(startDate, endDate, breakMinutes, totalMinutes);
     }
     return this.earningsNetto;
   }
 
-  calculatePrice(startDate: Date, endDate: Date, currentBreakMinutes: number, totalMinutes: number) {
+  calculatePriceX(startDate: Date, endDate: Date, currentBreakMinutes: number, totalMinutes: number) {
+    if (!startDate || !endDate || !totalMinutes) return 0;
+    let day = startDate.getDay();
+
+    if (day.toString() == "feestdag") {
+      return 0;
+    } else if (day == 0) {
+      let minutesPM = this.calculateTimeUntilMidnight(startDate, endDate);
+      if (minutesPM - currentBreakMinutes != totalMinutes) {
+        let minutesAM = totalMinutes - minutesPM;
+        this.earningsNetto = (minutesPM * (62.4 / 60)) + (minutesAM * (54 / 60));
+      } else {
+        this.earningsNetto = totalMinutes * (62.4 / 60);
+      }
+    } else if (day == 6) {
+      const eightPM = new Date(startDate);
+      eightPM.setHours(20, 0, 0, 0);
+
+      const midnight = new Date(startDate);
+      midnight.setDate(midnight.getDate() + 1);
+      midnight.setHours(0, 0, 0, 0);
+
+      const before8PM = this.toMinutes(Math.max(0, Math.min(eightPM.getTime(), endDate.getTime()) - startDate.getTime()));
+      const beforeMidnight = this.toMinutes(Math.max(0, Math.min(midnight.getTime(), endDate.getTime()) - Math.max(startDate.getTime(), eightPM.getTime())));
+      const afterMidnight = this.toMinutes(Math.max(0, endDate.getTime() - midnight.getTime()));
+
+      this.earningsNetto = ((before8PM - currentBreakMinutes) * (50.4 / 60)) + (beforeMidnight * (54 / 60)) + (afterMidnight * (62.4 / 60));
+    } else {
+      const durations = this.calculateShiftDurationsInMinutes(startDate, endDate);
+
+      this.earningsNetto = ((durations.before7PM - currentBreakMinutes) * (40 / 60)) + (durations.between7And8PM * (48 / 60)) + (durations.after8PM * (54 / 60));
+    }
+    return this.earningsNetto;
+  }
+
+    /**
+   * 
+   * Basis (100%) = €41.00 (uren op weekdagen tussen 07:00 – 19:00)
+   * Avond (120%) = €49.20 (uur tussen 19:00 – 20:00)
+   * Nacht (135%) = €55.35 (uren tussen 20:00 – 07:00)
+   * Zaterdag (126%) = €51.66 (uren op zaterdag)
+   * Zondag/feestdag (156%) = €63.96 (uren op zon-en feestdagen)
+   */
+  calculatePriceS(startDate: Date, endDate: Date, currentBreakMinutes: number, totalMinutes: number) {
     if (!startDate || !endDate || !totalMinutes) return 0;
     let day = startDate.getDay();
 
