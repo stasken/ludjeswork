@@ -15,13 +15,20 @@ export class AddShiftComponent implements OnInit {
   shiftForm!: FormGroup;
 
   totalMinutes: number = 0;
-  startDate!: Date;
+  // startDate: Date = new Date();
   endDate!: Date;
   currentBreakMinutes: number = 0;
   selectedPlatform!: string;
   earnings: number = 0;
   earningsNetto: number = 0;
   futureShifts: ShiftItem[] = [];
+
+  // START END
+  showBeginDatePicker: boolean = false;
+  showBeginTimePicker: boolean = false;
+  startDate: Date = new Date();
+  startHour: number = this.startDate.getHours();
+  startMinute: number = this.startDate.getMinutes();
 
   constructor(private fb: FormBuilder, private shiftService: ShiftsService, private calculations: CalculationService, private router: Router, private changeDetector: ChangeDetectorRef) { }
 
@@ -36,6 +43,8 @@ export class AddShiftComponent implements OnInit {
       platform: ['', Validators.required],
       location: ['', Validators.required],
       startDate: ['', Validators.required],
+      hour: ['', Validators.required],
+      minute: ['', Validators.required],
       earnings: ['',],
       endDate: ['', Validators.required],
       break: ['', [Validators.required, Validators.min(0)]],

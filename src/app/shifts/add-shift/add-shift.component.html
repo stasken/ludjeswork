@@ -19,15 +19,28 @@
     </ion-item>
 
     <!-- Date Picker -->
-    <ion-item>
+    <!-- <ion-item>
       <ion-label position="floating">Startdatum & uur</ion-label>
       <ion-datetime [preferWheel]="true" formControlName="startDate"></ion-datetime>
-    </ion-item>
+    </ion-item> -->
 
     <!-- End Time Picker -->
-    <ion-item>
+    <!-- <ion-item>
       <ion-label position="floating">Einduur</ion-label>
       <ion-datetime display-format="HH:mm" picker-format="HH:mm" formControlName="endDate" presentation="time"></ion-datetime>
+    </ion-item> -->
+
+    <!-- START and END 2 -->
+    <ion-item class="start-date-item">
+      <ion-label position="floating">Startdatum</ion-label>
+      <div class="start-date">
+        <p class="date-filter-btn" (click)="showBeginDatePicker = !showBeginDatePicker"> {{ startDate | date:'d/M/yy' }}
+        </p>
+        <p>-</p>
+        <ion-input type="number" formControlName="hour"></ion-input>
+        <ion-input type="number" formControlName="minute"></ion-input>
+      </div>
+      <ion-datetime *ngIf="showBeginDatePicker" [preferWheel]="true" formControlName="startDate"></ion-datetime>
     </ion-item>
 
     <!-- Break in Minutes -->

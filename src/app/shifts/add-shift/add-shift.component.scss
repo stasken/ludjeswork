@@ -13,3 +13,10 @@ ion-datetime {
 .btn-add {
     margin-top: 2rem;
 }
+
+.start-date {
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    width: 100%;
+}

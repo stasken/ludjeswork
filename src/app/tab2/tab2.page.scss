@@ -1,3 +1,30 @@
-ion-button {
-    margin: 0px;
+.header-shifts {
+    position: relative;
+
+    .shifts-toolbar {
+        z-index: 4;
+
+        .shifts-toolbar-title {}
+
+
+    }
+
+    .icon-button {
+        z-index: 30;
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        right: 16px;
+        transform: translateY(-50%);
+        background: transparent;
+        padding: 0;
+        border: none;
+        .icon-svg {
+            height: 45px;
+            width: 45px;
+            // height: 40px;
+            // width: 40px;
+            padding: 0;
+        }
+    }
 }

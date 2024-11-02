@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { ShiftListComponent } from '../shifts/shift-list/shift-list.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tab2',
@@ -10,9 +11,11 @@ export class Tab2Page {
   @ViewChild(ShiftListComponent) shiftListComponent!: ShiftListComponent;
   allShifts = false;
 
-  constructor() {}
+  constructor(private router: Router) {}
 
-  
+  navigateToShiftToevoegen() {
+    this.router.navigate(['tabs/toevoegen']);
+  }
   onChangeShifts() {
     
   }
