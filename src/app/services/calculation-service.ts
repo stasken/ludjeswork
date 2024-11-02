@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ShiftItem } from '../shifts/shift-list/shift-list.component';
+import { ShiftItem } from '../components/shifts/shift-list/shift-list.component';
 import { DatePipe } from '@angular/common';
 
 @Injectable({

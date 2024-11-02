@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { addDoc, collection, collectionData, deleteDoc, doc, Firestore, getDocs, orderBy, query, Timestamp, updateDoc, where } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Shift } from 'src/models/shift';
-import { ShiftItem } from '../shifts/shift-list/shift-list.component';
+import { ShiftItem } from '../components/shifts/shift-list/shift-list.component';
 
 @Injectable({
   providedIn: 'root'

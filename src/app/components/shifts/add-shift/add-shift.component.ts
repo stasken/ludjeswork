@@ -153,7 +153,7 @@ export class AddShiftComponent implements OnInit {
       enddate: end_timestamp,
       startdate: start_timestamp
     }).then((res) => {
-      this.router.navigate(['/tabs/shiften']);
+      this.router.navigate(['/shiften']);
     }).catch((error) => {
       console.log(error)
     })

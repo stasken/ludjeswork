@@ -5,9 +5,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ShiftListPage } from './shift-list.page';
 
 import { ShiftListPageRoutingModule } from './shift-list-routing.module';
-import { ShiftListComponent } from '../shifts/shift-list/shift-list.component';
-import { ShiftItemComponent } from '../shifts/shift-item/shift-item.component';
-import { AddShiftComponent } from '../shifts/add-shift/add-shift.component';
+import { ShiftListComponent } from '../../components/shifts/shift-list/shift-list.component';
+import { ShiftItemComponent } from '../../components/shifts/shift-item/shift-item.component';
+import { AddShiftComponent } from '../../components/shifts/add-shift/add-shift.component';
 
 @NgModule({
   imports: [

@@ -4,32 +4,36 @@ import { TabsPage } from './tabs.page';
 
 const routes: Routes = [
   {
-    path: 'tabs',
+    path: '',
     component: TabsPage,
     children: [
       {
         path: 'documenten',
-        loadChildren: () => import('../documents-tab/documents.module').then(m => m.DocumentPageModule)
+        loadChildren: () => import('./documents-tab/documents.module').then(m => m.DocumentPageModule)
       },
       {
         path: 'shiften',
-        loadChildren: () => import('../shift-list-tab/shift-list.module').then(m => m.ShiftListPageModule)
+        loadChildren: () => import('./shift-list-tab/shift-list.module').then(m => m.ShiftListPageModule)
       },
       {
         path: 'statistieken',
-        loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule)
+        loadChildren: () => import('./stats-tab/stats.module').then(m => m.StatsPageModule)
       },
       {
         path: '',
-        redirectTo: '/tabs/shiften/toevoegen',
+        redirectTo: '/shiften/toevoegen',
         pathMatch: 'full'
       }
     ]
   },
   {
     path: '',
-    redirectTo: '/tabs/shiften/toevoegen',
+    redirectTo: '/shiften/toevoegen',
     pathMatch: 'full'
+  },
+  {
+    path: '**',
+    redirectTo: '/shiften/toevoegen',
   }
 ];
 
