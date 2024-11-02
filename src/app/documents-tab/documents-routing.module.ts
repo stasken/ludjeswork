@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AddShiftPage } from './add-shift.page';
+import { DocumentsPage } from './documents.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: AddShiftPage,
+    component: DocumentsPage,
   }
 ];
 
@@ -13,4 +13,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class AddShiftPageRoutingModule {}
+export class DocumentsPageRoutingModule {}

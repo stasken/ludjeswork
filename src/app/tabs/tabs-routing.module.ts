@@ -8,12 +8,12 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
-        path: 'toevoegen',
-        loadChildren: () => import('../add-shift-tab/add-shift.module').then(m => m.AddShiftPageModule)
+        path: 'documenten',
+        loadChildren: () => import('../documents-tab/documents.module').then(m => m.DocumentPageModule)
       },
       {
         path: 'shiften',
-        loadChildren: () => import('../tab2/tab2.module').then(m => m.Tab2PageModule)
+        loadChildren: () => import('../shift-list-tab/shift-list.module').then(m => m.ShiftListPageModule)
       },
       {
         path: 'statistieken',
@@ -21,14 +21,14 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: '/tabs/toevoegen',
+        redirectTo: '/tabs/shiften/toevoegen',
         pathMatch: 'full'
       }
     ]
   },
   {
     path: '',
-    redirectTo: '/tabs/toevoegen',
+    redirectTo: '/tabs/shiften/toevoegen',
     pathMatch: 'full'
   }
 ];

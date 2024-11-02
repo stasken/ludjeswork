@@ -2,19 +2,18 @@ import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AddShiftPage } from './add-shift.page';
+import { DocumentsPage } from './documents.page';
 
-import { AddShiftPageRoutingModule } from './add-shift-routing.module';
-import { AddShiftComponent } from '../shifts/add-shift/add-shift.component';
+import { DocumentsPageRoutingModule } from './documents-routing.module';
 
 @NgModule({
   imports: [
     IonicModule,
     CommonModule,
     FormsModule,
-    AddShiftPageRoutingModule,
+    DocumentsPageRoutingModule,
     ReactiveFormsModule
   ],
-  declarations: [AddShiftPage,AddShiftComponent],
+  declarations: [DocumentsPage],
 })
-export class AddShiftPageModule {}
+export class DocumentPageModule {}
