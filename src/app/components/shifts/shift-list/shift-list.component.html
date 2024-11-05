@@ -18,6 +18,18 @@
   <div class="onlyPending">
     <ion-checkbox [(ngModel)]="onlyPending" (ionChange)="changePending()">Alleen aangevraagde</ion-checkbox>
   </div>
+  <div>
+    <ion-list>
+      <ion-item class="filter-order">
+        <ion-select aria-label="order" interface="popover" placeholder="Filter" (ionChange)="filterChanged($event)">
+          <ion-select-option value="ratingLowHigh">Rating laag naar hoog</ion-select-option>
+          <ion-select-option value="ratingHighLow">Rating hoog naar laag</ion-select-option>
+          <ion-select-option value="ratingLowHighAll">Rating laag naar hoog alles</ion-select-option>
+          <ion-select-option value="ratingHighLowAll">Rating hoog naar laag alles</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+  </div>
 </div>
 <ion-list>
   <app-shift-item *ngFor="let shift of currentFilteredShifts; let i = index" [shift]="shift"

@@ -85,11 +85,11 @@ export class ShiftListComponent implements OnInit {
       this.locations = res;
     })
   }
-  // getAllShifts() {
-  //   this.shiftService.getAllFutureShifts().then((res) => {
-  //     this.setCurrentShifts(res);
-  //   })
-  // }
+  getAllShifts() {
+    this.shiftService.getAllFutureShifts().then((res) => {
+      this.setCurrentShifts(res);
+    })
+  }
 
   getUnratedCompletedShifts() {
     this.shiftService.getUnratedCompletedShifts().then(res => {
@@ -148,6 +148,26 @@ export class ShiftListComponent implements OnInit {
       this.currentFilteredShifts = this.futureShifts.filter(shift => {
         return shift.accepted !== this.onlyPending;
       });
+    }
+  }
+
+  filterChanged(e: any) {
+    switch (e.detail.value) {
+      case 'ratingLowHigh':
+        this.currentFilteredShifts.sort((a, b) => a.rating - b.rating);
+        break;
+      case 'ratingHighLow':
+        this.currentFilteredShifts.sort((a, b) => b.rating - a.rating);
+        break;
+      case 'ratingLowHighAll':
+        this.getAllShifts();
+        this.currentFilteredShifts.sort((a, b) => a.rating - b.rating);
+        break;
+      case 'ratingHighLowAll':
+        this.getAllShifts();
+        this.currentFilteredShifts.sort((a, b) => b.rating - a.rating);
+        break;
+      default:
     }
   }
 }

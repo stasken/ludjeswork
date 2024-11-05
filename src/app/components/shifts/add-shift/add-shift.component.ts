@@ -47,10 +47,10 @@ export class AddShiftComponent implements OnInit, ViewDidEnter {
 
   constructor(private fb: FormBuilder, private shiftService: ShiftsService, private locationService: LocationsService, private calculations: CalculationService, private router: Router, private changeDetector: ChangeDetectorRef) {
     this.initializeDates()
+    this.initializeForm();
   }
 
   ngOnInit() {
-    this.initializeForm();
     this.subscribeToFormChanges();
   }
 
@@ -77,11 +77,11 @@ export class AddShiftComponent implements OnInit, ViewDidEnter {
       platform: ['', Validators.required],
       location: ['', Validators.required],
       startDate: [formattedStartDate, Validators.required],
-      startHour: [this.startDate.getHours(), Validators.required],
-      startMinute: [this.startDate.getMinutes(), Validators.required],
+      startHour: [this.startDate.getHours(), [Validators.required, Validators.min(0), Validators.max(23)]],
+      startMinute: [this.startDate.getMinutes(),[Validators.required, Validators.min(0), Validators.max(59)]],
       endDate: [formattedEndDate, Validators.required],
-      endHour: [this.endDate.getHours(), Validators.required],
-      endMinute: [this.endDate.getMinutes(), Validators.required],
+      endHour: [this.endDate.getHours(), [Validators.required, Validators.min(0), Validators.max(23)]],
+      endMinute: [this.endDate.getMinutes(), [Validators.required, Validators.min(0), Validators.max(59)]],
       earnings: ['',],
       break: [0, [Validators.required, Validators.min(0)]],
       accepted: [false]
@@ -129,24 +129,22 @@ export class AddShiftComponent implements OnInit, ViewDidEnter {
       this.checkNettoPrice();
     });
     this.shiftForm.get('startHour')?.valueChanges.subscribe((value) => {
-      // if 0 or 1 or 2 --> second digit 
-      // if 0 or 1 , second digit correct => go to minute
-      // if 2 and second not between 0 and 3 ==> incorrect => stays 2 and go to minute
-      // if 3 or above => pad 0 start and go to minute
-      this.selectedStartHour = value;
-      this.startDate.setHours(value);
-      this.setEndDate();
-      this.totalMinutes = this.calculations.calculateHours(this.endDate, this.startDate, this.currentBreakMinutes)
-      this.checkNettoPrice();
+      if (value >= 0 && value < 24) {
+        this.selectedStartHour = value;
+        this.startDate.setHours(value);
+        this.setEndDate();
+        this.totalMinutes = this.calculations.calculateHours(this.endDate, this.startDate, this.currentBreakMinutes)
+        this.checkNettoPrice();
+      }
     });
     this.shiftForm.get('startMinute')?.valueChanges.subscribe((value) => {
-      // 6 or above => pad 0 and restart if new digit
-      // under 6 => ready for next digit
-      this.selectedStartMinute = value;
-      this.startDate.setMinutes(value);
-      this.setEndDate();
-      this.totalMinutes = this.calculations.calculateHours(this.endDate, this.startDate, this.currentBreakMinutes)
-      this.checkNettoPrice();
+      if (value >= 0 && value < 60) {
+        this.selectedStartMinute = value;
+        this.startDate.setMinutes(value);
+        this.setEndDate();
+        this.totalMinutes = this.calculations.calculateHours(this.endDate, this.startDate, this.currentBreakMinutes)
+        this.checkNettoPrice();
+      }
     });
     this.shiftForm.get('endDate')?.valueChanges.subscribe((value) => {
       this.endDate = new Date(value);
