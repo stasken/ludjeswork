@@ -14,6 +14,7 @@ export class CalculationService {
     if (!endDate || !startDate) return 0;
     const diffInMs = endDate.getTime() - startDate.getTime(); // Difference in milliseconds
     let totalMinutes = Math.floor(diffInMs / (1000 * 60)) - breakMinutes;
+    
     return totalMinutes;
   }
 
@@ -72,6 +73,7 @@ export class CalculationService {
 
       this.earningsNetto = ((durations.before7PM - currentBreakMinutes) * (40 / 60)) + (durations.between7And8PM * (48 / 60)) + (durations.after8PM * (54 / 60));
     }
+    this.earningsNetto = Math.round(this.earningsNetto * 100) / 100;
     return this.earningsNetto;
   }
 
@@ -115,6 +117,7 @@ export class CalculationService {
 
       this.earningsNetto = ((durations.before7PM - currentBreakMinutes) * (40 / 60)) + (durations.between7And8PM * (48 / 60)) + (durations.after8PM * (54 / 60));
     }
+    this.earningsNetto = Math.round(this.earningsNetto * 100) / 100;
     return this.earningsNetto;
   }
 

@@ -2,7 +2,7 @@ import { Timestamp } from "@angular/fire/firestore";
 
 export class Shift {
     id?: string;
-    location: string;
+    locationId: string;
     comment: string;
     platform: string;
     accepted: boolean;
@@ -12,10 +12,10 @@ export class Shift {
     enddate: Timestamp;
     startdate: Timestamp;
   
-    constructor(location: string, platform: string, comment: string, accepted: boolean, breakMinutes: number, earnings: number, rating: number,
+    constructor(locationId: string, platform: string, comment: string, accepted: boolean, breakMinutes: number, earnings: number, rating: number,
       enddate: Timestamp, startdate: Timestamp
     ) {
-      this.location = location;
+      this.locationId = locationId;
       this.platform = platform;
       this.comment = comment;
       this.accepted = accepted;

@@ -57,6 +57,13 @@ export class LocationsService {
     });
   }
   
+  updateLocationEarningsTotal(locationId: string, ea: number,c: number) {
+    const locationRef = doc(this.firestore, `locations/${locationId}`);
+    return updateDoc(locationRef, {
+      totalEarned: ea,
+      totalWorkedShifts: c,
+    });
+  }
   deleteLocation(location: Location) {
     const locationRef = doc(this.firestore, `locations/${location.id}`);
     return deleteDoc(locationRef);

@@ -1,5 +1,3 @@
-import { Timestamp } from "@angular/fire/firestore";
-
 export class Location {
     id?: string;
     name: string;
@@ -18,4 +16,7 @@ export class Location {
       this.averageRating = averageRating;
     }
   
+    toString(): string {
+      return `${this.town}, ${this.name} -- ${this.averageRating} \u2606`;
+    }
   }

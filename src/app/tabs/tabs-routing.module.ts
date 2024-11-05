@@ -19,6 +19,11 @@ const routes: Routes = [
         path: 'statistieken',
         loadChildren: () => import('./stats-tab/stats.module').then(m => m.StatsPageModule)
       },
+      {
+        path: '',
+        redirectTo: '/shiften/toevoegen',
+        pathMatch: 'full'
+      }
     ]
   },
   {

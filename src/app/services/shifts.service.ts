@@ -84,6 +84,14 @@ export class ShiftsService {
     });
   }
 
+  
+  updateShiftLoc(shiftId:string, locId:string) {
+    const shiftRef = doc(this.firestore, `shifts/${shiftId}`);
+    return updateDoc(shiftRef, {
+      locationId: locId
+    });
+  }
+
   deleteShift(shift: ShiftItem) {
     const shiftRef = doc(this.firestore, `shifts/${shift.id}`);
     return deleteDoc(shiftRef);

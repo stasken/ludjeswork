@@ -20,10 +20,27 @@
     </ion-item>
 
     <!-- Platform Dropdown -->
-    <ion-item>
+    <!-- <ion-item>
       <ion-label position="floating">Locatie</ion-label>
       <ion-input type="text" formControlName="location"></ion-input>
-    </ion-item>
+    </ion-item> -->
+
+    <div class="location-item">
+      <ion-item class="input-item animate simple_input" lines="none">
+        <ion-label position="floating">Locatie</ion-label>
+        <ion-input name="text" formControlName="location" class="ff text_color">
+          <ion-button fill="clear" slot="end" aria-label="Show/hide" (click)="presentPopLocation()">
+            <ion-icon name="caret-down-outline"></ion-icon>
+          </ion-button>
+        </ion-input>
+      </ion-item>
+
+      <div class="background_popover popover_size" *ngIf="isOpenPopLocation">
+        <ion-item *ngFor="let item of filteredLocations; let i = index" class="item_popover">
+          <ion-label (click)="locationSelected(item)">{{item}}</ion-label>
+        </ion-item>
+      </div>
+    </div>
 
     <!-- Date Picker -->
     <!-- <ion-item>
@@ -38,16 +55,38 @@
     </ion-item> -->
 
     <!-- START and END 2 -->
-    <ion-item class="start-date-item">
+    <ion-item class="date-item">
       <ion-label position="floating">Startdatum</ion-label>
-      <div class="start-date">
-        <!-- <p class="date-filter-btn" (click)="showBeginDatePicker = !showBeginDatePicker"> {{ startDate | date:'d/M/yy' }} -->
-        <!-- </p> -->
-        <ion-input type="number" formControlName="hour"></ion-input>
-        <p>-</p>
-        <ion-input type="number" formControlName="minute"></ion-input>
+      <div class="datetime-input">
+        <div class="date-input">
+          <p class="date-filter-btn" (click)="showBeginDatePicker = !showBeginDatePicker"> {{ startDate | date:'d/M/yy'
+            }}
+          </p>
+          <ion-datetime *ngIf="showBeginDatePicker" presentation="date" formControlName="startDate"></ion-datetime>
+        </div>
+        <div class="time-input">
+          <ion-input type="number" formControlName="startHour"></ion-input>
+          <p>:</p>
+          <ion-input type="number" formControlName="startMinute"></ion-input>
+        </div>
       </div>
-      <!-- <ion-datetime *ngIf="showBeginDatePicker" [preferWheel]="true" formControlName="startDate"></ion-datetime> -->
+    </ion-item>
+
+    <ion-item class="date-item">
+      <ion-label position="floating">Einddatum</ion-label>
+      <div class="datetime-input">
+        <!-- <div class="date-input">
+          <p class="date-filter-btn" (click)="showEndDatePicker = !showEndDatePicker"> {{ endDate | date:'d/M/yy'
+            }}
+          </p>
+          <ion-datetime *ngIf="showEndDatePicker" presentation="date" formControlName="endDate"></ion-datetime>
+        </div> -->
+        <div class="time-input">
+          <ion-input type="number" formControlName="endHour"></ion-input>
+          <p>:</p>
+          <ion-input type="number" formControlName="endMinute"></ion-input>
+        </div>
+      </div>
     </ion-item>
 
     <!-- Break in Minutes -->

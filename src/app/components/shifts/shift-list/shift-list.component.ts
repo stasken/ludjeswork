@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { LocationsService } from 'src/app/services/locations.service';
 import { ShiftsService } from 'src/app/services/shifts.service';
 import { Shift } from 'src/models/shift';
+import { Location } from 'src/models/location';
 
 export class ShiftItem {
   id: string;
+  locationId: string;
   location: string;
   comment: string;
   platform: string;
@@ -17,10 +20,11 @@ export class ShiftItem {
   startdate: Date;
   completed: boolean;
 
-  constructor(id: string, location: string, platform: string, comment: string, accepted: boolean, breakMinutes: number, earnings: number, rating: number,
+  constructor(id: string, location: string, locationId: string, platform: string, comment: string, accepted: boolean, breakMinutes: number, earnings: number, rating: number,
     enddate: Date, startdate: Date
   ) {
     this.id = id;
+    this.locationId = locationId;
     this.location = location;
     this.platform = platform;
     this.comment = comment;
@@ -48,6 +52,7 @@ export class ShiftListComponent implements OnInit {
   paramsSub!: Subscription;
 
   // filter
+  locations: Location[] = [];
   startPeriod: Date;
   endPeriod: Date;
 
@@ -59,7 +64,7 @@ export class ShiftListComponent implements OnInit {
 
   onlyPending = false;
 
-  constructor(private shiftService: ShiftsService, private route: ActivatedRoute) {
+  constructor(private shiftService: ShiftsService, private locationService: LocationsService, private route: ActivatedRoute) {
     this.startPeriod = new Date();
     this.endPeriod = new Date(new Date().getFullYear(), new Date().getMonth() + 2, 0, 3); //  last day of current month
 
@@ -68,11 +73,17 @@ export class ShiftListComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getAllLocations();
     this.paramsSub = this.route.params.subscribe(params => {
       this.getShiftsByPeriod();
     })
   }
 
+  getAllLocations() {
+    this.locationService.getAllLocations().then((res) => {
+      this.locations = res;
+    })
+  }
   // getAllShifts() {
   //   this.shiftService.getAllFutureShifts().then((res) => {
   //     this.setCurrentShifts(res);
@@ -88,7 +99,10 @@ export class ShiftListComponent implements OnInit {
   setCurrentShifts(shifts: Shift[]) {
     this.futureShifts = [];
     shifts.forEach((shift) => {
-      let shiftItem: ShiftItem = new ShiftItem(shift.id ?? "", shift.location, shift.platform, shift.comment, shift.accepted, shift.break, shift.earnings, shift.rating, shift.enddate.toDate(), shift.startdate.toDate());
+      let location = this.locations.find(loc => loc.id === shift.locationId);
+      let locationString = "Geen locatie";
+      if (location) { locationString = `${location.town}, ${location.name}` };
+      let shiftItem: ShiftItem = new ShiftItem(shift.id ?? "", locationString ?? "Geen locatie", shift.locationId, shift.platform, shift.comment, shift.accepted, shift.break, shift.earnings, shift.rating, shift.enddate.toDate(), shift.startdate.toDate());
       this.futureShifts.push(shiftItem);
     })
     this.shiftMap = new Map(this.futureShifts.map(item => [item.id, item]));

@@ -16,7 +16,4 @@ export class ShiftListPage {
   navigateToShiftToevoegen() {
     this.router.navigate(['shiften/toevoegen']);
   }
-  onChangeShifts() {
-    
-  }
 }

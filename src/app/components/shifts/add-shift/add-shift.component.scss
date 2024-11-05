@@ -1,7 +1,8 @@
-ion-item {
+.ion-item {
     display: flex;
     align-items: center;
 }
+
 ion-label {
     display: block;
 }
@@ -14,9 +15,92 @@ ion-datetime {
     margin-top: 2rem;
 }
 
-.start-date {
+.date-item {
+    --inner-border-width: 1px 0 1px 0;
+    align-items: center;
+}
+
+.datetime-input {
     display: flex;
-    flex-direction: row;
-    align-items: start;
-    width: 100%;
+    flex-direction: column;
+    align-items: center !important;
+    justify-content: center;
+
+    .date-input {
+        .date-filter-btn {
+            text-align: center;
+            margin: 0 auto;
+            border: none;
+            font-weight: bold;
+            color: #ee83e5;
+        }
+    }
+
+
+    .time-input {
+        display: flex;
+        align-items: center;
+        align-items: center !important;
+
+        ion-input {
+            text-align: center;
+            width: 50px;
+        }
+    }
+}
+
+// 
+.location-item {
+    .background_input {
+        --background: var(--ion-color-break-layer);
+    }
+
+    form {
+        max-width: 90%;
+        margin: 10px;
+
+        .input-item {
+            border-radius: 12px;
+            --background: var(--ion-color-break-layer);
+
+            ion-icon {
+                color: #fff;
+            }
+
+            ion-input {
+                color: #fff;
+                padding-left: 12px !important;
+                height: 48px;
+            }
+        }
+    }
+
+    .icon_color {
+        stroke: var(--icon-grey);
+    }
+
+    .background_popover {
+        background: var(--ion-color-break-layer);
+    }
+
+    .popover_size {
+        max-height: 200px;
+        overflow-y: scroll;
+        position: absolute;
+        width: 83%;
+        margin-left: 4%;
+        z-index: 2;
+    }
+
+    .item_popover {
+        --background: #3d3d3d;
+    }
+
+    .input_pop {
+        margin: 16px 0px 2px 0px;
+    }
+
+    .simple_input {
+        margin: 8px 0px;
+    }
 }
