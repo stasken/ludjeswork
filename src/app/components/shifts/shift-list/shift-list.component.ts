@@ -7,23 +7,27 @@ import { Shift } from 'src/models/shift';
 export class ShiftItem {
   id: string;
   location: string;
+  comment: string;
   platform: string;
   accepted: boolean;
   break: number;
   earnings: number;
+  rating: number;
   enddate: Date;
   startdate: Date;
   completed: boolean;
 
-  constructor(id: string, location: string, platform: string, accepted: boolean, breakMinutes: number, earnings: number,
+  constructor(id: string, location: string, platform: string, comment: string, accepted: boolean, breakMinutes: number, earnings: number, rating: number,
     enddate: Date, startdate: Date
   ) {
     this.id = id;
     this.location = location;
     this.platform = platform;
+    this.comment = comment;
     this.accepted = accepted;
     this.break = breakMinutes;
     this.earnings = earnings;
+    this.rating = rating;
     this.enddate = enddate;
     this.startdate = startdate;
     this.completed = this.startdate < new Date();
@@ -84,7 +88,7 @@ export class ShiftListComponent implements OnInit {
   setCurrentShifts(shifts: Shift[]) {
     this.futureShifts = [];
     shifts.forEach((shift) => {
-      let shiftItem: ShiftItem = new ShiftItem(shift.id ?? "", shift.location, shift.platform, shift.accepted, shift.break, shift.earnings, shift.enddate.toDate(), shift.startdate.toDate());
+      let shiftItem: ShiftItem = new ShiftItem(shift.id ?? "", shift.location, shift.platform, shift.comment, shift.accepted, shift.break, shift.earnings, shift.rating, shift.enddate.toDate(), shift.startdate.toDate());
       this.futureShifts.push(shiftItem);
     })
     this.shiftMap = new Map(this.futureShifts.map(item => [item.id, item]));
