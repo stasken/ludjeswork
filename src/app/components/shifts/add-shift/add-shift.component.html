@@ -1,3 +1,10 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Voeg shift toe
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
 <ion-content>
   <form [formGroup]="shiftForm" (ngSubmit)="onSubmit()">
     <!-- Platform Dropdown -->
@@ -34,13 +41,13 @@
     <ion-item class="start-date-item">
       <ion-label position="floating">Startdatum</ion-label>
       <div class="start-date">
-        <p class="date-filter-btn" (click)="showBeginDatePicker = !showBeginDatePicker"> {{ startDate | date:'d/M/yy' }}
-        </p>
-        <p>-</p>
+        <!-- <p class="date-filter-btn" (click)="showBeginDatePicker = !showBeginDatePicker"> {{ startDate | date:'d/M/yy' }} -->
+        <!-- </p> -->
         <ion-input type="number" formControlName="hour"></ion-input>
+        <p>-</p>
         <ion-input type="number" formControlName="minute"></ion-input>
       </div>
-      <ion-datetime *ngIf="showBeginDatePicker" [preferWheel]="true" formControlName="startDate"></ion-datetime>
+      <!-- <ion-datetime *ngIf="showBeginDatePicker" [preferWheel]="true" formControlName="startDate"></ion-datetime> -->
     </ion-item>
 
     <!-- Break in Minutes -->
