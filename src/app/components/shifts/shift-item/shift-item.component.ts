@@ -1,4 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { RatingModalComponent } from 'src/app/modals/rating-modal/rating-modal.component';
 import { ShiftsService } from 'src/app/services/shifts.service';
 
 @Component({
@@ -17,7 +19,7 @@ export class ShiftItemComponent implements OnInit {
   // SAVE
   @ViewChild('saveBtn', { static: false }) saveButton!: ElementRef<HTMLButtonElement>;
 
-  constructor(private shiftService: ShiftsService) {
+  constructor(private shiftService: ShiftsService, private modalController: ModalController) {
   }
 
   onShiftChange() {
@@ -86,4 +88,20 @@ export class ShiftItemComponent implements OnInit {
       e.classList.add('buttonNormal');
     }, 3500);
   };
+
+  // rating
+  async openRatingModal() {
+    const modal = await this.modalController.create({
+      component: RatingModalComponent,
+      componentProps: { currentRating: this.shift.rating, currentAverageRating: 0, currentLocation: this.shift.location },
+    });
+
+    modal.onDidDismiss().then((data) => {
+      if (data.data) {
+        this.shift.rating = data.data;
+      }
+    });
+
+    return await modal.present();
+  }
 }

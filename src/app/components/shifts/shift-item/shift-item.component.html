@@ -10,11 +10,15 @@
     <div class='adjustableInfo'>
       <div class="earnings">
         <span style="font-size: 18px;">€</span>
-        <ion-input type="number" [(ngModel)]="shift.earnings" [disabled]="shift.platform === 'X-Care' || shift.platform === 'Caresquare'" (ionChange)="onShiftChange()"></ion-input>
+        <ion-input type="number" [(ngModel)]="shift.earnings"
+          [disabled]="shift.platform === 'X-Care' || shift.platform === 'Caresquare'"
+          (ionChange)="onShiftChange()"></ion-input>
       </div>
       <div class="break">
         <span style="font-size: 18px;">◷</span>
-        <ion-input type="number" [(ngModel)]="shift.break" [disabled]="shift.platform === 'X-Care' || shift.platform === 'Caresquare'" (ionChange)="onShiftChange()"></ion-input>
+        <ion-input type="number" [(ngModel)]="shift.break"
+          [disabled]="shift.platform === 'X-Care' || shift.platform === 'Caresquare'"
+          (ionChange)="onShiftChange()"></ion-input>
         <!-- <span>min</span> -->
       </div>
     </div>
@@ -24,16 +28,25 @@
     <div class="buttons">
       <div>
         <div class="wrapper">
-          <div class="block"><button #deleteBtn class="button" [disabled]="shift.completed" (click)="deleteShift(deleteBtn)"><ion-icon name="trash-outline"></ion-icon></button></div>
+          <div class="block"><button #deleteBtn class="button" [disabled]="shift.completed"
+              (click)="deleteShift(deleteBtn)"><ion-icon name="trash-outline"></ion-icon></button></div>
         </div>
       </div>
 
+      <div (click)="openRatingModal()">
+        <ion-icon name="star-outline" size="large"></ion-icon>
+      </div>
+
       <div>
-        <ion-label *ngIf="shift.accepted">Geaccepteerd</ion-label>
-        <ion-label *ngIf="!shift.accepted">Aangevraagd</ion-label>
+        <!-- <ion-label *ngIf="shift.accepted">Geaccepteerd</ion-label> -->
+        <!-- <ion-label *ngIf="!shift.accepted">Aangevraagd</ion-label> -->
         <ion-toggle [(ngModel)]="shift.accepted" (ionChange)="onShiftChange()"></ion-toggle>
       </div>
-      
+
+      <div (click)="openRatingModal()">
+        <ion-icon name="document-outline" size="large"></ion-icon>
+      </div>
+
       <div>
         <div class="wrapper">
           <div class="block"><button #saveBtn class="button" (click)="saveShift(saveBtn)" disabled="true"><ion-icon

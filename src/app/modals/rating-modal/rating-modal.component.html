@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Rate Us
+      <span (click)="cancel()" class="btn-cancel">Cancel</span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="star-container">
+    <div class="star-selection">
+      <div class="location-info">
+        <h2>{{ currentLocation }}</h2>
+        <h5>{{ currentAverage }}</h5>
+      </div>
+      <div>
+        <ng-container *ngFor="let star of [1, 2, 3, 4, 5]; let i = index">
+          <ion-icon (click)="selectedRating = i + 1" [name]="i < selectedRating ? 'star' : 'star-outline'"
+            class="star"></ion-icon>
+        </ng-container>
+      </div>
+    </div>
+    <div class="save-btn">
+      <ion-button expand="full" (click)="saveRating()">Save</ion-button>
+    </div>
+  </div>
+</ion-content>

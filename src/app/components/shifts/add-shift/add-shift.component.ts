@@ -56,7 +56,7 @@ export class AddShiftComponent implements OnInit {
     this.shiftService.getAllFutureShifts().then((res) => {
       this.futureShifts = [];
       res.forEach((shift) => {
-        let shiftItem: ShiftItem = new ShiftItem(shift.id ?? "", shift.location, shift.platform, shift.accepted, shift.break, shift.earnings, shift.enddate.toDate(), shift.startdate.toDate());
+        let shiftItem: ShiftItem = new ShiftItem(shift.id ?? "", shift.location, shift.platform, shift.comment, shift.accepted, shift.break, shift.earnings, shift.rating, shift.enddate.toDate(), shift.startdate.toDate());
         this.futureShifts.push(shiftItem);
       })
     })
@@ -149,6 +149,8 @@ export class AddShiftComponent implements OnInit {
       platform: this.shiftForm.get("platform")?.value,
       accepted: this.shiftForm.get("accepted")?.value,
       break: this.shiftForm.get("break")?.value,
+      comment:"",
+      rating:0,
       earnings: this.earningsNetto,
       enddate: end_timestamp,
       startdate: start_timestamp

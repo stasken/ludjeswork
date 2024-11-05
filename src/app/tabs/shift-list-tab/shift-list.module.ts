@@ -8,6 +8,7 @@ import { ShiftListPageRoutingModule } from './shift-list-routing.module';
 import { ShiftListComponent } from '../../components/shifts/shift-list/shift-list.component';
 import { ShiftItemComponent } from '../../components/shifts/shift-item/shift-item.component';
 import { AddShiftComponent } from '../../components/shifts/add-shift/add-shift.component';
+import { RatingModalComponent } from 'src/app/modals/rating-modal/rating-modal.component';
 
 @NgModule({
   imports: [
@@ -17,6 +18,6 @@ import { AddShiftComponent } from '../../components/shifts/add-shift/add-shift.c
     ReactiveFormsModule,
     ShiftListPageRoutingModule
   ],
-  declarations: [ShiftListPage,ShiftListComponent,ShiftItemComponent,AddShiftComponent]
+  declarations: [ShiftListPage,ShiftListComponent,ShiftItemComponent,AddShiftComponent,RatingModalComponent]
 })
 export class ShiftListPageModule {}
