@@ -3,7 +3,7 @@ import { ShiftListComponent } from '../../components/shifts/shift-list/shift-lis
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-shift-list',
+  selector: 'app-shift-list-tab',
   templateUrl: 'shift-list.page.html',
   styleUrls: ['shift-list.page.scss']
 })
