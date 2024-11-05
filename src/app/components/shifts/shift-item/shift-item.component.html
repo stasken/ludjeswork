@@ -33,7 +33,7 @@
         </div>
       </div>
 
-      <div (click)="openRatingModal()">
+      <div (click)="openRatingModal()" *ngIf="shift.completed">
         <ion-icon name="star-outline" size="large"></ion-icon>
       </div>
 
@@ -43,7 +43,7 @@
         <ion-toggle [(ngModel)]="shift.accepted" (ionChange)="onShiftChange()"></ion-toggle>
       </div>
 
-      <div (click)="openRatingModal()">
+      <div (click)="openRatingModal()" *ngIf="shift.completed">
         <ion-icon name="document-outline" size="large"></ion-icon>
       </div>
 

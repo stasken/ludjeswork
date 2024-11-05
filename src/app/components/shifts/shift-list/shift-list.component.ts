@@ -75,7 +75,8 @@ export class ShiftListComponent implements OnInit {
   ngOnInit() {
     this.getAllLocations();
     this.paramsSub = this.route.params.subscribe(params => {
-      this.getShiftsByPeriod();
+      this.getUnratedCompletedShifts();
+      // this.getShiftsByPeriod();
     })
   }
 
@@ -89,6 +90,17 @@ export class ShiftListComponent implements OnInit {
   //     this.setCurrentShifts(res);
   //   })
   // }
+
+  getUnratedCompletedShifts() {
+    this.shiftService.getUnratedCompletedShifts().then(res => {
+      if (res.length > 0) {
+        window.alert("Gelieve eerst de afgewerkte shiften een rating te geven.");
+        this.setCurrentShifts(res);
+      } else {
+        this.getShiftsByPeriod();
+      }
+    })
+  }
 
   getShiftsByPeriod() {
     this.shiftService.getShiftsByPeriod(this.startPeriod, this.endPeriod).then((res) => {
@@ -107,17 +119,6 @@ export class ShiftListComponent implements OnInit {
     })
     this.shiftMap = new Map(this.futureShifts.map(item => [item.id, item]));
     this.currentFilteredShifts = this.futureShifts.slice(0);
-  }
-
-  checkChanges(shift: ShiftItem) {
-    const foundShift = this.shiftMap.get(shift.id);
-    if (foundShift) {
-      const isChanged =
-        foundShift.earnings !== shift.earnings ||
-        foundShift.accepted !== shift.accepted ||
-        foundShift.break !== shift.break;
-
-    }
   }
 
   deleteShift(shift: ShiftItem) {

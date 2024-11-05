@@ -50,6 +50,26 @@ export class ShiftsService {
     return futureShifts;
   }
 
+  async getUnratedCompletedShifts() {
+    let shifts: Shift[] = [];
+    let begin = new Date();
+    const shiftRef = collection(this.firestore, "shifts")
+    const q = query(
+      shiftRef,
+      where('startdate', '<', begin),
+      where('rating', '==', 0),
+      orderBy('startdate', 'asc'));
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+      let shift = doc.data() as Shift;
+      shift.id = doc.id;
+      shifts.push(shift);
+    });
+
+    return shifts;
+  }
+
   async getShiftsByPeriod(begin:Date, end:Date) {
     let shifts: Shift[] = [];
 
@@ -84,7 +104,13 @@ export class ShiftsService {
     });
   }
 
-  
+  updateShiftRating(shiftId:string, rating:number) {
+    const shiftRef = doc(this.firestore, `shifts/${shiftId}`);
+    return updateDoc(shiftRef, {
+      rating: rating
+    });
+  }
+
   updateShiftLoc(shiftId:string, locId:string) {
     const shiftRef = doc(this.firestore, `shifts/${shiftId}`);
     return updateDoc(shiftRef, {

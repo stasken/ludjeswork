@@ -2,6 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 import { ModalController } from '@ionic/angular';
 import { RatingModalComponent } from 'src/app/modals/rating-modal/rating-modal.component';
 import { ShiftsService } from 'src/app/services/shifts.service';
+import { ShiftItem } from '../shift-list/shift-list.component';
 
 @Component({
   selector: 'app-shift-item',
@@ -9,7 +10,7 @@ import { ShiftsService } from 'src/app/services/shifts.service';
   styleUrls: ['./shift-item.component.scss'],
 })
 export class ShiftItemComponent implements OnInit {
-  @Input() shift: any;
+  @Input() shift!: ShiftItem;
   @Output() updateShiftEmitter = new EventEmitter<any>();
   @Output() deleteShiftEmitter = new EventEmitter<any>();
 
@@ -62,8 +63,8 @@ export class ShiftItemComponent implements OnInit {
   deleteShift(btn: HTMLButtonElement) {
     if (window.confirm('Zeker dat je deze shift wilt verwijderen?')) {
       this.shiftService.deleteShift(this.shift).then(() => {
-      this.deleteShiftEmitter.emit(this.shift);
-      btn.classList.add('success');
+        this.deleteShiftEmitter.emit(this.shift);
+        btn.classList.add('success');
         this.animateButton(btn, true);
       }).catch(() => {
         btn.classList.add('error');
@@ -78,8 +79,8 @@ export class ShiftItemComponent implements OnInit {
     e.classList.add('animate');
     if (succes) {
       setTimeout(function () {
-      e.classList.remove('buttonNormal');
-      e.classList.add('buttonSuccess');
+        e.classList.remove('buttonNormal');
+        e.classList.add('buttonSuccess');
       }, 1500);
     }
     setTimeout(function () {
@@ -93,12 +94,14 @@ export class ShiftItemComponent implements OnInit {
   async openRatingModal() {
     const modal = await this.modalController.create({
       component: RatingModalComponent,
-      componentProps: { currentRating: this.shift.rating, currentAverageRating: 0, currentLocation: this.shift.location },
+      componentProps: { shift: this.shift, currentAverageRating: 0 },
     });
 
     modal.onDidDismiss().then((data) => {
       if (data.data) {
-        this.shift.rating = data.data;
+        this.deleteShiftEmitter.emit(this.shift);
+      } else {
+
       }
     });
 
