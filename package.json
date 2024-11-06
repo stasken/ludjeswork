@@ -30,7 +30,10 @@
     "@capacitor/splash-screen": "^6.0.2",
     "@capacitor/status-bar": "6.0.1",
     "@ionic/angular": "^8.0.0",
+    "@lordicon/element": "^1.10.1",
     "ionicons": "^7.0.0",
+    "lord-icon-element": "^4.1.2",
+    "lottie-web": "^5.12.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.2"
