@@ -64,6 +64,12 @@ export class ShiftListComponent implements OnInit {
 
   onlyPending = false;
 
+  // Location autofill
+  filteredLocations: Location[] = [];
+  isOpenPopLocation = false;
+  selectedLocation!: Location;
+  userLocation = "";
+
   constructor(private shiftService: ShiftsService, private locationService: LocationsService, private route: ActivatedRoute) {
     this.startPeriod = new Date();
     this.endPeriod = new Date(new Date().getFullYear(), new Date().getMonth() + 2, 0, 3); //  last day of current month
@@ -72,17 +78,20 @@ export class ShiftListComponent implements OnInit {
     this.endDatetime = this.endPeriod.toISOString();
   }
 
-  ngOnInit() {
-    this.getAllLocations();
+  async ngOnInit() {
+    await this.getAllLocations();
     this.paramsSub = this.route.params.subscribe(params => {
       this.getUnratedCompletedShifts();
+      this.filterLocations("");
       // this.getShiftsByPeriod();
     })
   }
 
-  getAllLocations() {
-    this.locationService.getAllLocations().then((res) => {
-      this.locations = res;
+  async getAllLocations() {
+    this.locationService.getAllLocations().then(locs => {
+      this.locations = locs.map(loc =>
+        new Location(loc.name, loc.town, loc.address, loc.totalWorkedShifts, loc.totalEarned, loc.averageRating, loc.id)
+      );
     })
   }
   getAllShifts() {
@@ -90,7 +99,6 @@ export class ShiftListComponent implements OnInit {
       this.setCurrentShifts(res);
     })
   }
-
   getUnratedCompletedShifts() {
     this.shiftService.getUnratedCompletedShifts().then(res => {
       if (res.length > 0) {
@@ -101,10 +109,16 @@ export class ShiftListComponent implements OnInit {
       }
     })
   }
-
   getShiftsByPeriod() {
     this.shiftService.getShiftsByPeriod(this.startPeriod, this.endPeriod).then((res) => {
       this.setCurrentShifts(res);
+    })
+  }
+  getShiftsByLocation(locationId: string) {
+    this.shiftService.getShiftsByLocation(locationId).then((res) => {
+      this.setCurrentShifts(res);
+      console.log(res);
+
     })
   }
 
@@ -151,7 +165,7 @@ export class ShiftListComponent implements OnInit {
     }
   }
 
-  filterChanged(e: any) {
+  filterOrderChanged(e: any) {
     switch (e.detail.value) {
       case 'ratingLowHigh':
         this.currentFilteredShifts.sort((a, b) => a.rating - b.rating);
@@ -167,7 +181,53 @@ export class ShiftListComponent implements OnInit {
         this.getAllShifts();
         this.currentFilteredShifts.sort((a, b) => b.rating - a.rating);
         break;
+      case 'earningsHighLow':
+        this.currentFilteredShifts.sort((a, b) => b.earnings - a.earnings);
+        break;
+      case 'ratingLowHigh':
+        this.currentFilteredShifts.sort((a, b) => b.earnings - a.earnings);
+        break;
+      case 'descendingByDate':
+        this.currentFilteredShifts.sort((a, b) => b.startdate.getTime() - a.startdate.getTime());
+        break;
+      case 'ascendingByDate':
+        this.currentFilteredShifts.sort((a, b) => b.startdate.getTime() - a.startdate.getTime() );
+        break;
+
       default:
+    }
+  }
+
+  presentPopLocation() {
+    this.isOpenPopLocation = !this.isOpenPopLocation;
+  }
+
+  locationSelected(item: Location) {
+    this.selectedLocation = item;
+    this.userLocation = this.selectedLocation.toString();
+    this.isOpenPopLocation = false;
+    if (item && item.id) {
+      this.getShiftsByLocation(item.id)
+    }
+  }
+
+  filterLocations(value: string) {
+    this.isOpenPopLocation = true;
+    if (value && value.trim() !== '') {
+      const query = value.toLowerCase();
+      this.filteredLocations = this.locations.filter(loc => {
+        return loc.toString().toLowerCase().includes(query)
+      });
+    } else {
+      this.filteredLocations = [];
+    }
+  }
+
+  onLocationChange() {
+    if (this.selectedLocation && this.selectedLocation.toString().toLowerCase() === this.userLocation.toLowerCase()) {
+      this.isOpenPopLocation = false;
+    } else {
+      this.filterLocations(this.userLocation);
     }
   }
 }

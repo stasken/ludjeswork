@@ -1,38 +1,69 @@
 <div class="filter">
-  <h2>Periode:
-    <span class="date-filter-btn" (click)="showBeginDatePicker = !showBeginDatePicker"> {{ startPeriod | date:'d/M/yy' }}</span> -
-    <span class="date-filter-btn" (click)="showEndDatePicker = !showEndDatePicker"> {{ endPeriod | date:'d/M/yy' }} </span>
-  </h2>
+  <h3>Periode:
+    <span class="date-filter-btn" (click)="showBeginDatePicker = !showBeginDatePicker"> {{ startPeriod | date:'d/M/yy'
+      }}</span> -
+    <span class="date-filter-btn" (click)="showEndDatePicker = !showEndDatePicker"> {{ endPeriod | date:'d/M/yy' }}
+    </span>
+  </h3>
+
   <div *ngIf="showBeginDatePicker">
     <ion-label position="floating" class="label-datetime">Begin</ion-label>
     <ion-datetime presentation="date" [preferWheel]="true" [(ngModel)]="beginDatetime">
     </ion-datetime>
     <ion-button class="btn-begin" (click)="saveBeginPeriod()">Opslaan</ion-button>
   </div>
+
   <div *ngIf="showEndDatePicker">
     <ion-label position="floating" class="label-datetime">Einde</ion-label>
     <ion-datetime presentation="date" [preferWheel]="true" [(ngModel)]="endDatetime">
     </ion-datetime>
     <ion-button class="btn-end" (click)="saveEndPeriod()">Opslaan</ion-button>
   </div>
-  <div class="onlyPending">
-    <ion-checkbox [(ngModel)]="onlyPending" (ionChange)="changePending()">Alleen aangevraagde</ion-checkbox>
-  </div>
-  <div>
-    <ion-list>
-      <ion-item class="filter-order">
-        <ion-select aria-label="order" interface="popover" placeholder="Filter" (ionChange)="filterChanged($event)">
+
+  <div class="filter-dropdowns">
+    <ion-list class="filter-order-list">
+      <ion-item class="filter-order-item">
+        <ion-select aria-label="order" interface="popover" placeholder="Filter"
+          (ionChange)="filterOrderChanged($event)">
           <ion-select-option value="ratingLowHigh">Rating laag naar hoog</ion-select-option>
           <ion-select-option value="ratingHighLow">Rating hoog naar laag</ion-select-option>
           <ion-select-option value="ratingLowHighAll">Rating laag naar hoog alles</ion-select-option>
           <ion-select-option value="ratingHighLowAll">Rating hoog naar laag alles</ion-select-option>
+          <ion-select-option value="earningsHighLow">Meeste verdiend eerst</ion-select-option>
+          <ion-select-option value="earningsLowHigh">Minste verdiend eerst</ion-select-option>
+          <ion-select-option value="descendingByDate">Meest recente</ion-select-option>
+          <ion-select-option value="ascendingByDate">Minst recente</ion-select-option>
         </ion-select>
       </ion-item>
     </ion-list>
+
+    <div>
+      <div class="location-item">
+        <ion-item class="input-item animate simple_input" lines="none">
+          <ion-input name="text" (keyup)="onLocationChange()" [(ngModel)]="userLocation" class="ff text_color"
+            placeholder="Locatie">
+            <ion-button fill="clear" slot="end" aria-label="Show/hide" (click)="presentPopLocation()">
+              <ion-icon name="caret-down-outline"></ion-icon>
+            </ion-button>
+          </ion-input>
+        </ion-item>
+
+        <div class="background_popover popover_size" *ngIf="isOpenPopLocation">
+          <ion-item *ngFor="let item of filteredLocations; let i = index" class="item_popover">
+            <ion-label (click)="locationSelected(item)">{{item}}</ion-label>
+          </ion-item>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <div class="onlyPending">
+    <ion-checkbox [(ngModel)]="onlyPending" (ionChange)="changePending()">Alleen aangevraagde</ion-checkbox>
+  </div>
+
 </div>
 <ion-list>
   <app-shift-item *ngFor="let shift of currentFilteredShifts; let i = index" [shift]="shift"
-     (deleteShiftEmitter)="deleteShift($event)"></app-shift-item>
+    (deleteShiftEmitter)="deleteShift($event)"></app-shift-item>
 </ion-list>
 <!--(updateShift)="futureShifts[i] = $event"-->

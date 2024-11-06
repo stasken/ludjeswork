@@ -70,7 +70,7 @@ export class ShiftsService {
     return shifts;
   }
 
-  async getShiftsByPeriod(begin:Date, end:Date) {
+  async getShiftsByPeriod(begin: Date, end: Date) {
     let shifts: Shift[] = [];
 
     const shiftRef = collection(this.firestore, "shifts")
@@ -78,6 +78,25 @@ export class ShiftsService {
       shiftRef,
       where('startdate', '>=', begin),
       where('startdate', '<=', end),
+      orderBy('startdate', 'asc'));
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+      let shift = doc.data() as Shift;
+      shift.id = doc.id;
+      shifts.push(shift);
+    });
+
+    return shifts;
+  }
+
+  async getShiftsByLocation(locationId: string) {
+    let shifts: Shift[] = [];
+
+    const shiftRef = collection(this.firestore, "shifts")
+    const q = query(
+      shiftRef,
+      where('locationId', '==', locationId),
       orderBy('startdate', 'asc'));
     const querySnapshot = await getDocs(q);
 
@@ -104,14 +123,14 @@ export class ShiftsService {
     });
   }
 
-  updateShiftRating(shiftId:string, rating:number) {
+  updateShiftRating(shiftId: string, rating: number) {
     const shiftRef = doc(this.firestore, `shifts/${shiftId}`);
     return updateDoc(shiftRef, {
       rating: rating
     });
   }
 
-  updateShiftLoc(shiftId:string, locId:string) {
+  updateShiftLoc(shiftId: string, locId: string) {
     const shiftRef = doc(this.firestore, `shifts/${shiftId}`);
     return updateDoc(shiftRef, {
       locationId: locId
