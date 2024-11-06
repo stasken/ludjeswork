@@ -10,10 +10,74 @@
     .label-datetime {
         margin-bottom: 1rem !important;
     }
+
     .btn-month {
         margin-top: 15px;
     }
+
     .btn-previous {
         margin-right: 15px;
+    }
+
+    // 
+    .location-item {
+        .background_input {
+            --background: var(--ion-color-break-layer);
+        }
+
+        form {
+            max-width: 90%;
+            margin: 10px;
+
+            .input-item {
+                border-radius: 12px;
+                --background: var(--ion-color-break-layer);
+
+                ion-icon {
+                    color: #fff;
+                }
+
+                ion-input {
+                    color: #fff;
+                    padding-left: 12px !important;
+                    height: 48px;
+                }
+            }
+        }
+
+        .icon_color {
+            stroke: var(--icon-grey);
+        }
+
+        .background_popover {
+            background: var(--ion-color-break-layer);
+        }
+
+        .popover_size {
+            max-height: 200px;
+            overflow-y: scroll;
+            position: absolute;
+            width: 83%;
+            margin-left: 4%;
+            z-index: 2;
+        }
+
+        .item_popover {
+            --background: #3d3d3d;
+        }
+
+        .input_pop {
+            margin: 16px 0px 2px 0px;
+        }
+
+        .simple_input {
+            margin: 8px 0px;
+        }
+
+        .remove-text-btn {
+            margin-right: 15px;
+            color: deeppink;
+            --background: transparent !important;
+        }
     }
 }

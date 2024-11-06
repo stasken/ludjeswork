@@ -52,7 +52,6 @@ export class ShiftListComponent implements OnInit {
   paramsSub!: Subscription;
 
   // filter
-  locations: Location[] = [];
   startPeriod: Date;
   endPeriod: Date;
 
@@ -65,6 +64,7 @@ export class ShiftListComponent implements OnInit {
   onlyPending = false;
 
   // Location autofill
+  locations: Location[] = [];
   filteredLocations: Location[] = [];
   isOpenPopLocation = false;
   selectedLocation!: Location;
@@ -117,8 +117,6 @@ export class ShiftListComponent implements OnInit {
   getShiftsByLocation(locationId: string) {
     this.shiftService.getShiftsByLocation(locationId).then((res) => {
       this.setCurrentShifts(res);
-      console.log(res);
-
     })
   }
 

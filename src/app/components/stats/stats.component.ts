@@ -4,6 +4,8 @@ import { Subscription } from 'rxjs';
 import { CalculationService } from 'src/app/services/calculation-service';
 import { ShiftsService } from 'src/app/services/shifts.service';
 import { Shift } from 'src/models/shift';
+import { Location } from 'src/models/location';
+import { LocationsService } from 'src/app/services/locations.service';
 
 @Component({
   selector: 'app-stats',
@@ -30,19 +32,27 @@ export class StatsComponent implements OnInit {
   showBeginDatePicker = false;
   showEndDatePicker = false;
 
-  constructor(private shiftService: ShiftsService, private calcs: CalculationService, private route: ActivatedRoute) {
+  // Location autofill
+  locations: Location[] = [];
+  filteredLocations: Location[] = [];
+  isOpenPopLocation = false;
+  selectedLocation!: Location;
+  userLocation = "";
+
+  constructor(private shiftService: ShiftsService, private locationService: LocationsService, private calcs: CalculationService, private route: ActivatedRoute) {
     this.currentYear = new Date().getFullYear();
     this.currentMonth = new Date().getMonth();
-
     this.setCurrentMonthPeriod()
   }
 
   ngOnInit() {
     this.paramsSub = this.route.params.subscribe(params => {
       this.getShiftsForPeriod();
+      this.getAllLocations();
     })
   }
 
+  // GET DATA
   getShiftsForPeriod() {
     this.shiftService.getShiftsByPeriod(this.startPeriod, this.endPeriod).then(res => {
       let stats = this.getShiftStats(res);
@@ -68,6 +78,7 @@ export class StatsComponent implements OnInit {
     return result;
   }
 
+  // CALC
   setCurrentMonthPeriod() {
     this.startPeriod = new Date(this.currentYear, this.currentMonth, 1, 5);
     this.endPeriod = new Date(this.currentYear, this.currentMonth + 1, 0, 3);
@@ -77,6 +88,7 @@ export class StatsComponent implements OnInit {
     this.getShiftsForPeriod();
   }
 
+  // BUTTON HANDLERS
   goToPreviousMonth() {
     this.currentMonth--;
     if (this.currentMonth == 0) {
@@ -85,7 +97,7 @@ export class StatsComponent implements OnInit {
     }
     this.setCurrentMonthPeriod();
   }
-  
+
   goToNextMonth() {
     this.currentMonth++;
     if (this.currentMonth + 1 == 13) {
@@ -95,6 +107,7 @@ export class StatsComponent implements OnInit {
     this.setCurrentMonthPeriod();
   }
 
+  // SAVE BUTTONS HANDLERS
   saveBeginPeriod() {
     this.startPeriod = new Date(this.beginDatetime);
     this.currentMonth = this.startPeriod.getMonth();
@@ -102,9 +115,86 @@ export class StatsComponent implements OnInit {
     this.showBeginDatePicker = false;
     this.getShiftsForPeriod();
   }
+
   saveEndPeriod() {
     this.endPeriod = new Date(this.endDatetime);
     this.showEndDatePicker = false;
     this.getShiftsForPeriod();
+  }
+
+  // LOCATION DROPDOWN FILTER
+  async getAllLocations() {
+    this.locationService.getAllLocations().then(locs => {
+      this.locations = locs.map(loc =>
+        new Location(loc.name, loc.town, loc.address, loc.totalWorkedShifts, loc.totalEarned, loc.averageRating, loc.id)
+      );
+    })
+  }
+  calculateShiftsByLocation(locationId: string) {
+    this.shiftService.getShiftsByLocation(locationId).then((res) => {
+      this.getEarliestAndLatestDates(res);
+      let stats = this.getShiftStats(res);
+      this.countShifts = stats.shiftCount;
+      this.countHours = `${(stats.totalHours / 60).toFixed(2)} uren`;
+      this.earnings = `€ ${stats.totalEarnings.toFixed(2)}`;
+      this.earningsPlusNA = `€ ${stats.totalEarningsNA.toFixed(2)}`;
+    })
+  }
+  getEarliestAndLatestDates(shifts: Shift[]) {
+    const dates = shifts.reduce(
+      (acc, shift) => {
+        // Compare shift.startPeriod for the earliest date
+        if (shift.startdate < acc.earliest) {
+          acc.earliest = shift.startdate;
+        }
+        // Compare shift.endPeriod for the latest date
+        if (shift.enddate > acc.latest) {
+          acc.latest = shift.enddate;
+        }
+        return acc;
+      },
+      {
+        earliest: shifts[0].startdate, // Start with the first element's startPeriod
+        latest: shifts[0].enddate       // Start with the first element's endPeriod
+      }
+    );
+
+    // Set this.startPeriod and this.endPeriod with the results
+    this.startPeriod = dates.earliest.toDate();
+    this.endPeriod = dates.latest.toDate();
+  }
+
+  presentPopLocation() {
+    this.isOpenPopLocation = !this.isOpenPopLocation;
+  }
+  locationSelected(item: Location) {
+    this.selectedLocation = item;
+    this.userLocation = this.selectedLocation.toString();
+    this.isOpenPopLocation = false;
+    if (item && item.id) {
+      this.calculateShiftsByLocation(item.id)
+    }
+  }
+  filterLocations(value: string) {
+    this.isOpenPopLocation = true;
+    if (value && value.trim() !== '') {
+      const query = value.toLowerCase();
+      this.filteredLocations = this.locations.filter(loc => {
+        return loc.toString().toLowerCase().includes(query)
+      });
+    } else {
+      this.filteredLocations = [];
+    }
+  }
+  onStatsLocationChange() {
+    if (this.selectedLocation && this.selectedLocation.toString().toLowerCase() === this.userLocation.toLowerCase()) {
+      this.isOpenPopLocation = false;
+    } else {
+      this.filterLocations(this.userLocation);
+    }
+  }
+
+  removeInputLocation() {
+    this.userLocation = "";
   }
 }

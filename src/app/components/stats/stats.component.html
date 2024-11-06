@@ -1,5 +1,6 @@
 <div class="stats">
   <div class="filter">
+    <!-- PERIODE-->
     <h2>Periode:
       <span class="date-filter-btn" (click)="showBeginDatePicker = !showBeginDatePicker"> {{ startPeriod | date:'d/M/yy'
         }}</span> -
@@ -18,10 +19,34 @@
       </ion-datetime>
       <ion-button class="btn-end" (click)="saveEndPeriod()">Opslaan</ion-button>
     </div>
+
+    <!-- MONTH BUTTONS-->
     <div class="btn-month">
       <ion-button class="btn-previous" (click)="goToPreviousMonth()">Vorige maand</ion-button>
       <ion-button (click)="goToNextMonth()">Volgende maand</ion-button>
     </div>
+
+    <!-- LOCATION -->
+      <div class="location-item">
+        <ion-item class="input-item animate simple_input" lines="none">
+          <ion-input name="text" (keyup)="onStatsLocationChange()" [(ngModel)]="userLocation" class="ff text_color"
+            placeholder="Locatie">
+            <ion-button class="remove-text-btn" slot="end" aria-label="remove" (click)="removeInputLocation()">
+              <ion-icon name="close-circle-outline"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" slot="end" aria-label="Show/hide" (click)="presentPopLocation()">
+              <ion-icon name="caret-down-outline"></ion-icon>
+            </ion-button>
+          </ion-input>
+        </ion-item>
+
+        <div class="background_popover popover_size" *ngIf="isOpenPopLocation">
+          <ion-item *ngFor="let item of filteredLocations; let i = index" class="item_popover">
+            <ion-label (click)="locationSelected(item)">{{item}}</ion-label>
+          </ion-item>
+        </div>
+      </div>
+    
   </div>
   <p>Aantal shiften</p>
   <span class="statNumber">{{ countShifts }}</span>
