@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { RatingModalComponent } from 'src/app/modals/rating-modal/rating-modal.component';
 import { ShiftsService } from 'src/app/services/shifts.service';
@@ -17,10 +17,17 @@ export class ShiftItemComponent implements OnInit {
   dateToString!: string;
   timeToString!: string;
 
+  locationTitle: string = "";
+
   // SAVE
   @ViewChild('saveBtn', { static: false }) saveButton!: ElementRef<HTMLButtonElement>;
 
   constructor(private shiftService: ShiftsService, private modalController: ModalController) {
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    let shift = changes['shift'].currentValue;
+    this.locationTitle = `\u2606 ${shift.location.averageRating} ${shift.location.town}, ${shift.location.name}`;
   }
 
   onShiftChange() {
@@ -94,14 +101,30 @@ export class ShiftItemComponent implements OnInit {
   async openRatingModal() {
     const modal = await this.modalController.create({
       component: RatingModalComponent,
-      componentProps: { shift: this.shift, currentAverageRating: 0 },
+      componentProps: { shift: this.shift, currentAverageRating: this.shift.location.averageRating },
     });
 
     modal.onDidDismiss().then((data) => {
-      if (data.data) {
-        this.deleteShiftEmitter.emit(this.shift);
-      } else {
-
+      let update = data.data.update;
+      let newRating = data.data.newRating;
+      let newAvgRating = data.data.newAvgRating;
+      this.shift.location.averageRating = newAvgRating;
+      this.locationTitle = `\u2606 ${this.shift.location.averageRating} ${this.shift.location.town}, ${this.shift.location.name}`;
+      switch (update) {
+        case 0:
+          this.shift.rating = newRating;
+          this.updateShiftEmitter.emit(this.shift)
+          break;
+        case 1:
+          break;
+        case 2:
+          this.deleteShiftEmitter.emit(this.shift);
+          break;
+        // error
+        case 3:
+          this.deleteShiftEmitter.emit(this.shift);
+          break;
+        default:
       }
     });
 

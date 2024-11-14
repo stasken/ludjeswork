@@ -78,7 +78,7 @@ export class AddShiftComponent implements OnInit, ViewDidEnter {
       location: ['', Validators.required],
       startDate: [formattedStartDate, Validators.required],
       startHour: [this.startDate.getHours(), [Validators.required, Validators.min(0), Validators.max(23)]],
-      startMinute: [this.startDate.getMinutes(),[Validators.required, Validators.min(0), Validators.max(59)]],
+      startMinute: [this.startDate.getMinutes(), [Validators.required, Validators.min(0), Validators.max(59)]],
       endDate: [formattedEndDate, Validators.required],
       endHour: [this.endDate.getHours(), [Validators.required, Validators.min(0), Validators.max(23)]],
       endMinute: [this.endDate.getMinutes(), [Validators.required, Validators.min(0), Validators.max(59)]],
@@ -93,8 +93,10 @@ export class AddShiftComponent implements OnInit, ViewDidEnter {
       this.futureShifts = [];
       res.forEach((shift) => {
         let loc = this.locations.find(l => shift.locationId === l.id);
-        let shiftItem: ShiftItem = new ShiftItem(shift.id ?? "", loc?.id ?? "", loc?.name ?? "", shift.platform, shift.comment, shift.accepted, shift.break, shift.earnings, shift.rating, shift.enddate.toDate(), shift.startdate.toDate());
-        this.futureShifts.push(shiftItem);
+        if (loc) {
+          let shiftItem: ShiftItem = new ShiftItem(shift.id ?? "", loc, shift.platform, shift.comment, shift.accepted, shift.break, shift.earnings, shift.rating, shift.enddate.toDate(), shift.startdate.toDate(), new Date());
+          this.futureShifts.push(shiftItem);
+        }
       })
     })
   }
@@ -102,9 +104,8 @@ export class AddShiftComponent implements OnInit, ViewDidEnter {
   async getAllLocations() {
     this.locationService.getAllLocations().then(locs => {
       this.locations = locs.map(loc =>
-        new Location(loc.name, loc.town, loc.address, loc.totalWorkedShifts, loc.totalEarned, loc.averageRating)
+        new Location(loc.name, loc.town, loc.address, loc.totalWorkedShifts, loc.totalEarned, loc.averageRating, loc.id)
       );
-
     })
   }
 
@@ -194,15 +195,21 @@ export class AddShiftComponent implements OnInit, ViewDidEnter {
     this.isOpenPopLocation = true;
     if (value instanceof Location) {
       this.isOpenPopLocation = false;
+      this.filteredLocations = [value];
+      return;
     }
     if (value && value.trim() !== '') {
       const query = value.toLowerCase();
       this.filteredLocations = this.locations.filter(loc => {
-        return loc.toString().toLowerCase().includes(query)
+        return loc.toString().toLowerCase().includes(query.trim())
       });
     } else {
       this.filteredLocations = [];
     }
+  }
+
+  removeInputLocation() {
+    this.shiftForm.controls['location'].setValue("");
   }
 
   setEndDate() {
@@ -234,42 +241,40 @@ export class AddShiftComponent implements OnInit, ViewDidEnter {
         let startHour = this.startDate.getHours();
         if ((day === 1 || day === 4) && startHour >= 12) {
           if (window.confirm(`Arno moet coachen die avond. Zeker dat u dit wilt doen?`)) {
-            this.addShiftToDb(start, end);
+            this.checkLocationBeforeAddShiftToDb(start, end);
           }
         } else {
-          this.addShiftToDb(start, end);
+          this.checkLocationBeforeAddShiftToDb(start, end);
         }
       } else if (noOverlap.status === 1) {
         window.alert(noOverlap.statusText);
       } else if (noOverlap.status === 2 || noOverlap.status === 3) {
         if (window.confirm(`${noOverlap.statusText}\nZeker dat u dit wilt doen?`)) {
-          this.addShiftToDb(start, end);
+          this.checkLocationBeforeAddShiftToDb(start, end);
         }
       }
     }
   }
 
-  async addShiftToDb(start: Date, end: Date) {
-    let start_timestamp = Timestamp.fromDate(start)
-    let end_timestamp = Timestamp.fromDate(end)
-    let locationId = "";
-
-    if (!this.selectedLocation) {
-      let inputLocation = this.shiftForm.get('location')?.value;
+  async checkLocationBeforeAddShiftToDb(start: Date, end: Date) {
+    let inputLocation = this.shiftForm.get('location')?.value;
+    if (inputLocation) {
+      this.addShiftToDb(inputLocation.id, start, end);
+    } else {
       const regex = /^([^\d]+),\s*(.+)$/;
       const match = inputLocation.match(regex);
       if (match) {
         const town = match[1].trim();
         const name = match[2].trim();
         await this.locationService.addLocation({
-          name: name,
-          town: town,
+          name: this.capitalizeFirstLetter(name),
+          town: this.capitalizeFirstLetter(town),
           address: "",
           totalWorkedShifts: 0,
           totalEarned: 0,
           averageRating: 0
         }).then(docRef => {
-          locationId = docRef.id;
+          this.addShiftToDb(docRef.id, start, end);
         }).catch(error => {
           console.error("Error adding location:", error);
           window.alert("Er is een fout opgetreden bij het toevoegen van de locatie.");
@@ -279,9 +284,12 @@ export class AddShiftComponent implements OnInit, ViewDidEnter {
         window.alert("Geen correcte manier van Stad en Naam.\nTussen stad en naam een komma plaatsen.\nVoorbeeld: Gent, Vulpia Vroonstalle")
         return;
       }
-    } else {
-      locationId = this.selectedLocation.id ?? "";
     }
+  }
+
+  async addShiftToDb(locationId: string, start: Date, end: Date) {
+    let start_timestamp = Timestamp.fromDate(start)
+    let end_timestamp = Timestamp.fromDate(end)
     await this.shiftService.addShift({
       locationId: locationId,
       platform: this.shiftForm.get("platform")?.value,
@@ -293,10 +301,31 @@ export class AddShiftComponent implements OnInit, ViewDidEnter {
       enddate: end_timestamp,
       startdate: start_timestamp
     }).then((res) => {
+      this.initializeDates();
+      const formattedStartDate = this.startDate.toISOString().substring(0, 10);
+      const formattedEndDate = this.endDate.toISOString().substring(0, 10);
+      this.shiftForm.reset({
+        platform: '',
+        location: '',
+        startDate: formattedStartDate,
+        startHour: this.startDate.getHours(),
+        startMinute: this.startDate.getMinutes(),
+        endDate: formattedEndDate,
+        endHour: this.endDate.getHours(),
+        endMinute: this.endDate.getMinutes(),
+        earnings: '',
+        break: 0,
+        accepted: false
+      });
       this.router.navigate(['/shiften']);
     }).catch((error) => {
       console.log(error)
     })
+  }
+
+  capitalizeFirstLetter(str: string): string {
+    if (str.length === 0) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
 }

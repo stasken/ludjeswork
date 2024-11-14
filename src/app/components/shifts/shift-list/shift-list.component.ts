@@ -8,8 +8,8 @@ import { Location } from 'src/models/location';
 
 export class ShiftItem {
   id: string;
-  locationId: string;
-  location: string;
+  location: Location;
+  title: string;
   comment: string;
   platform: string;
   accepted: boolean;
@@ -20,21 +20,21 @@ export class ShiftItem {
   startdate: Date;
   completed: boolean;
 
-  constructor(id: string, location: string, locationId: string, platform: string, comment: string, accepted: boolean, breakMinutes: number, earnings: number, rating: number,
-    enddate: Date, startdate: Date
+  constructor(id: string, location: Location, platform: string, comment: string, accepted: boolean, breakMinutes: number, earnings: number, rating: number,
+    enddate: Date, startdate: Date, today: Date
   ) {
     this.id = id;
-    this.locationId = locationId;
     this.location = location;
     this.platform = platform;
     this.comment = comment;
+    this.title = `\u2606 ${rating}`;
     this.accepted = accepted;
     this.break = breakMinutes;
     this.earnings = earnings;
     this.rating = rating;
     this.enddate = enddate;
     this.startdate = startdate;
-    this.completed = this.startdate < new Date();
+    this.completed = this.startdate < today;
   }
 
 }
@@ -45,13 +45,14 @@ export class ShiftItem {
   styleUrls: ['./shift-list.component.scss'],
 })
 export class ShiftListComponent implements OnInit {
-  futureShifts: ShiftItem[] = [];
+  currentSelectedShifts: ShiftItem[] = [];
   currentFilteredShifts: ShiftItem[] = [];
   shiftMap!: Map<string, ShiftItem>;
 
   paramsSub!: Subscription;
 
   // filter
+  today: Date;
   startPeriod: Date;
   endPeriod: Date;
 
@@ -71,8 +72,9 @@ export class ShiftListComponent implements OnInit {
   userLocation = "";
 
   constructor(private shiftService: ShiftsService, private locationService: LocationsService, private route: ActivatedRoute) {
-    this.startPeriod = new Date();
-    this.endPeriod = new Date(new Date().getFullYear(), new Date().getMonth() + 2, 0, 3); //  last day of current month
+    this.today = new Date();
+    this.startPeriod = this.today;
+    this.endPeriod = new Date(this.today.getFullYear(), this.today.getMonth() + 2, 0, 3); //  last day of current month
 
     this.beginDatetime = this.startPeriod.toISOString();
     this.endDatetime = this.endPeriod.toISOString();
@@ -80,10 +82,11 @@ export class ShiftListComponent implements OnInit {
 
   async ngOnInit() {
     await this.getAllLocations();
+    this.getAllFutureShifts()
     this.paramsSub = this.route.params.subscribe(params => {
       this.getUnratedCompletedShifts();
       this.filterLocations("");
-      // this.getShiftsByPeriod();
+      this.getAllFutureShifts()
     })
   }
 
@@ -94,11 +97,18 @@ export class ShiftListComponent implements OnInit {
       );
     })
   }
-  getAllShifts() {
+  async getAllFutureShifts() {
     this.shiftService.getAllFutureShifts().then((res) => {
       this.setCurrentShifts(res);
     })
   }
+
+  async getAllShifts() {
+    this.shiftService.getAllShifts().then((res) => {
+      this.setCurrentShifts(res);
+    })
+  }
+
   getUnratedCompletedShifts() {
     this.shiftService.getUnratedCompletedShifts().then(res => {
       if (res.length > 0) {
@@ -114,6 +124,7 @@ export class ShiftListComponent implements OnInit {
       this.setCurrentShifts(res);
     })
   }
+
   getShiftsByLocation(locationId: string) {
     this.shiftService.getShiftsByLocation(locationId).then((res) => {
       this.setCurrentShifts(res);
@@ -121,16 +132,25 @@ export class ShiftListComponent implements OnInit {
   }
 
   setCurrentShifts(shifts: Shift[]) {
-    this.futureShifts = [];
+    this.currentSelectedShifts = [];
     shifts.forEach((shift) => {
       let location = this.locations.find(loc => loc.id === shift.locationId);
-      let locationString = "Geen locatie";
-      if (location) { locationString = `${location.town}, ${location.name}` };
-      let shiftItem: ShiftItem = new ShiftItem(shift.id ?? "", locationString ?? "Geen locatie", shift.locationId, shift.platform, shift.comment, shift.accepted, shift.break, shift.earnings, shift.rating, shift.enddate.toDate(), shift.startdate.toDate());
-      this.futureShifts.push(shiftItem);
+      if (location) {
+        let shiftItem: ShiftItem = new ShiftItem(shift.id ?? "", location, shift.platform, shift.comment, shift.accepted, shift.break, shift.earnings, shift.rating, shift.enddate.toDate(), shift.startdate.toDate(), this.today);
+        this.currentSelectedShifts.push(shiftItem);
+      }
     })
-    this.shiftMap = new Map(this.futureShifts.map(item => [item.id, item]));
-    this.currentFilteredShifts = this.futureShifts.slice(0);
+    this.shiftMap = new Map(this.currentSelectedShifts.map(item => [item.id, item]));
+    this.currentFilteredShifts = this.currentSelectedShifts.slice(0);
+  }
+
+  updateShift(shift: ShiftItem) {
+    const index = this.currentSelectedShifts.indexOf(shift, 0);
+    if (index > - 1) {
+      shift.title = `\u2606 ${shift.rating}`;
+      this.currentSelectedShifts[index] = shift;
+      this.currentFilteredShifts = this.currentSelectedShifts.slice(0);
+    }
   }
 
   deleteShift(shift: ShiftItem) {
@@ -155,9 +175,9 @@ export class ShiftListComponent implements OnInit {
 
   changePending() {
     if (!this.onlyPending) {
-      this.currentFilteredShifts = this.futureShifts.slice(0);
+      this.currentFilteredShifts = this.currentSelectedShifts.slice(0);
     } else {
-      this.currentFilteredShifts = this.futureShifts.filter(shift => {
+      this.currentFilteredShifts = this.currentSelectedShifts.filter(shift => {
         return shift.accepted !== this.onlyPending;
       });
     }
@@ -166,30 +186,42 @@ export class ShiftListComponent implements OnInit {
   filterOrderChanged(e: any) {
     switch (e.detail.value) {
       case 'ratingLowHigh':
-        this.currentFilteredShifts.sort((a, b) => a.rating - b.rating);
+        var filtered = this.currentSelectedShifts.filter(shift => shift.rating !== 0);
+        if (filtered.length === 0) {
+          window.alert("De lijst bevat enkel toekomstige shifts, dus nog zonder rating.");
+          e.target.value = null;
+          break;
+        }
+        this.currentFilteredShifts = filtered.sort((a, b) => a.rating - b.rating);
         break;
       case 'ratingHighLow':
-        this.currentFilteredShifts.sort((a, b) => b.rating - a.rating);
+        var filtered = this.currentSelectedShifts.filter(shift => shift.rating !== 0);
+        if (filtered.length === 0) {
+          e.target.value = null;
+          window.alert("De lijst bevat enkel toekomstige shifts, dus nog zonder rating.");
+          break;
+        }
+        this.currentFilteredShifts = filtered.sort((a, b) => b.rating - a.rating);
         break;
       case 'ratingLowHighAll':
         this.getAllShifts();
-        this.currentFilteredShifts.sort((a, b) => a.rating - b.rating);
+        this.currentFilteredShifts = this.currentSelectedShifts.sort((a, b) => a.rating - b.rating);
         break;
       case 'ratingHighLowAll':
         this.getAllShifts();
-        this.currentFilteredShifts.sort((a, b) => b.rating - a.rating);
+        this.currentFilteredShifts = this.currentSelectedShifts.sort((a, b) => b.rating - a.rating);
         break;
       case 'earningsHighLow':
-        this.currentFilteredShifts.sort((a, b) => b.earnings - a.earnings);
+        this.currentFilteredShifts = this.currentSelectedShifts.sort((a, b) => b.earnings - a.earnings);
         break;
-      case 'ratingLowHigh':
-        this.currentFilteredShifts.sort((a, b) => b.earnings - a.earnings);
+      case 'earningsLowHigh':
+        this.currentFilteredShifts = this.currentSelectedShifts.sort((a, b) => a.earnings - b.earnings);
         break;
       case 'descendingByDate':
-        this.currentFilteredShifts.sort((a, b) => b.startdate.getTime() - a.startdate.getTime());
+        this.currentFilteredShifts = this.currentSelectedShifts.sort((a, b) => a.startdate.getTime() - b.startdate.getTime());
         break;
       case 'ascendingByDate':
-        this.currentFilteredShifts.sort((a, b) => b.startdate.getTime() - a.startdate.getTime() );
+        this.currentFilteredShifts = this.currentSelectedShifts.sort((a, b) => b.startdate.getTime() - a.startdate.getTime());
         break;
 
       default:

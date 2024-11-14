@@ -130,6 +130,7 @@ export class StatsComponent implements OnInit {
       );
     })
   }
+
   calculateShiftsByLocation(locationId: string) {
     this.shiftService.getShiftsByLocation(locationId).then((res) => {
       this.getEarliestAndLatestDates(res);
@@ -140,6 +141,7 @@ export class StatsComponent implements OnInit {
       this.earningsPlusNA = `€ ${stats.totalEarningsNA.toFixed(2)}`;
     })
   }
+
   getEarliestAndLatestDates(shifts: Shift[]) {
     const dates = shifts.reduce(
       (acc, shift) => {
@@ -167,6 +169,7 @@ export class StatsComponent implements OnInit {
   presentPopLocation() {
     this.isOpenPopLocation = !this.isOpenPopLocation;
   }
+
   locationSelected(item: Location) {
     this.selectedLocation = item;
     this.userLocation = this.selectedLocation.toString();
@@ -175,6 +178,7 @@ export class StatsComponent implements OnInit {
       this.calculateShiftsByLocation(item.id)
     }
   }
+
   filterLocations(value: string) {
     this.isOpenPopLocation = true;
     if (value && value.trim() !== '') {
@@ -186,6 +190,7 @@ export class StatsComponent implements OnInit {
       this.filteredLocations = [];
     }
   }
+
   onStatsLocationChange() {
     if (this.selectedLocation && this.selectedLocation.toString().toLowerCase() === this.userLocation.toLowerCase()) {
       this.isOpenPopLocation = false;
@@ -196,5 +201,8 @@ export class StatsComponent implements OnInit {
 
   removeInputLocation() {
     this.userLocation = "";
+    this.filterLocations(this.userLocation);
+    this.isOpenPopLocation = false;
+    this.setCurrentMonthPeriod();
   }
 }

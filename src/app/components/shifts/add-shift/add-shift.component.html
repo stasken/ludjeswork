@@ -29,6 +29,9 @@
       <ion-item class="input-item animate simple_input" lines="none">
         <ion-label position="floating">Locatie</ion-label>
         <ion-input name="text" formControlName="location" class="ff text_color">
+          <ion-button class="remove-text-btn" slot="end" aria-label="remove" (click)="removeInputLocation()">
+            <ion-icon name="close-circle-outline"></ion-icon>
+          </ion-button>
           <ion-button fill="clear" slot="end" aria-label="Show/hide" (click)="presentPopLocation()">
             <ion-icon name="caret-down-outline"></ion-icon>
           </ion-button>

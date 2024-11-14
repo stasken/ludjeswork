@@ -56,7 +56,7 @@ export class ShiftsService {
     const shiftRef = collection(this.firestore, "shifts")
     const q = query(
       shiftRef,
-      where('startdate', '<', begin),
+      where('enddate', '<', begin),
       where('rating', '==', 0),
       orderBy('startdate', 'asc'));
     const querySnapshot = await getDocs(q);

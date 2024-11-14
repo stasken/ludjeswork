@@ -43,10 +43,10 @@ export class LocationsService {
     });
   }
 
-  updateLocationRating(location: Location) {
-    const locationRef = doc(this.firestore, `locations/${location.id}`);
+  updateLocationRating(locationId: string, avg: number) {
+    const locationRef = doc(this.firestore, `locations/${locationId}`);
     return updateDoc(locationRef, {
-      averageRating: location.averageRating
+      averageRating: avg
     });
   }
 

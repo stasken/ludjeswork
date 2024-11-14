@@ -31,8 +31,8 @@
           <ion-select-option value="ratingHighLowAll">Rating hoog naar laag alles</ion-select-option>
           <ion-select-option value="earningsHighLow">Meeste verdiend eerst</ion-select-option>
           <ion-select-option value="earningsLowHigh">Minste verdiend eerst</ion-select-option>
-          <ion-select-option value="descendingByDate">Meest recente</ion-select-option>
-          <ion-select-option value="ascendingByDate">Minst recente</ion-select-option>
+          <ion-select-option value="descendingByDate">Vroegste eerst</ion-select-option>
+          <ion-select-option value="ascendingByDate">Laatste eerst</ion-select-option>
         </ion-select>
       </ion-item>
     </ion-list>
@@ -65,6 +65,6 @@
 </div>
 <ion-list>
   <app-shift-item *ngFor="let shift of currentFilteredShifts; let i = index" [shift]="shift"
-    (deleteShiftEmitter)="deleteShift($event)"></app-shift-item>
+    (deleteShiftEmitter)="deleteShift($event)" (updateShiftEmitter)="updateShift($event)"></app-shift-item>
 </ion-list>
 <!--(updateShift)="futureShifts[i] = $event"-->

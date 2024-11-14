@@ -176,6 +176,7 @@ export class CalculationService {
       const shiftStart = shift.startdate;
       const shiftEnd = shift.enddate;
 
+      // Overlap
       const overlap: boolean = (start <= shiftEnd && start >= shiftStart) || (end <= shiftEnd && end >= shiftStart);
       if (overlap) {
         const formattedStartDate = this.date.transform(shift.startdate, 'medium');
@@ -185,26 +186,24 @@ export class CalculationService {
           statusText: `Deze shift overlapt met de shift in ${shift.location} van ${formattedStartDate} tot ${formattedEndDate}.`
         };
       }
-      const beforeStart = shiftStart.getTime() - (4 * 60 * 60 * 1000); // shiftEnd + 4 hours
-      const before: boolean = start.getTime() >= beforeStart && start.getTime() <= shiftStart.getTime();
 
-      if (before) {
+      // Start day same day as new end day
+      if (shiftStart.toDateString() === end.toDateString()) {
         const formattedStartDate = this.date.transform(shift.startdate, 'medium');
         const formattedEndDate = this.date.transform(shift.enddate, 'medium');
         return {
           status: 2,
-          statusText: `Deze shift zou net voor de shift vallen in ${shift.location} die start van ${formattedStartDate} tot ${formattedEndDate} is.`
+          statusText: `Deze shift zou voor de shift vallen in ${shift.location} die start van ${formattedStartDate} tot ${formattedEndDate} is.`
         };
       }
 
-      const afterEnd = shiftEnd.getTime() + (4 * 60 * 60 * 1000); // end + 4 hours
-      const after: boolean = shiftEnd.getTime() <= start.getTime() && afterEnd >= start.getTime();
-      if (after) {
+      // End day same day as new start day
+      if (shiftEnd.toDateString() === start.toDateString()) {
         const formattedStartDate = this.date.transform(shift.startdate, 'medium');
         const formattedEndDate = this.date.transform(shift.enddate, 'medium');
         return {
           status: 3,
-          statusText: `Deze shift komt net na de shift in ${shift.location} van ${formattedStartDate} tot ${formattedEndDate} is.`
+          statusText: `Deze shift zou na de shift vallen in ${shift.location} die start van ${formattedStartDate} tot ${formattedEndDate}.`
         };
       }
     }
