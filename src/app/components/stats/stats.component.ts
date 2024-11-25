@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { CalculationService } from 'src/app/services/calculation-service';
 import { ShiftsService } from 'src/app/services/shifts.service';
 import { Shift } from 'src/models/shift';
 import { Location } from 'src/models/location';
 import { LocationsService } from 'src/app/services/locations.service';
+import { CalculationsService } from 'src/app/services/calculations.service';
 
 @Component({
   selector: 'app-stats',
@@ -39,7 +39,7 @@ export class StatsComponent implements OnInit {
   selectedLocation!: Location;
   userLocation = "";
 
-  constructor(private shiftService: ShiftsService, private locationService: LocationsService, private calcs: CalculationService, private route: ActivatedRoute) {
+  constructor(private shiftService: ShiftsService, private locationService: LocationsService, private calcs: CalculationsService, private route: ActivatedRoute) {
     this.currentYear = new Date().getFullYear();
     this.currentMonth = new Date().getMonth();
     this.setCurrentMonthPeriod()

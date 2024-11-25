@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/co
 import { Timestamp } from '@angular/fire/firestore';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CalculationService } from 'src/app/services/calculation-service';
+import { CalculationsService } from 'src/app/services/calculations.service';
 import { ShiftsService } from 'src/app/services/shifts.service';
 import { ShiftItem } from '../shift-list/shift-list.component';
 import { LocationsService } from 'src/app/services/locations.service';
@@ -45,7 +45,7 @@ export class AddShiftComponent implements OnInit, ViewDidEnter {
   selectedEndHour = 0;
   selectedEndMinute = 0;
 
-  constructor(private fb: FormBuilder, private shiftService: ShiftsService, private locationService: LocationsService, private calculations: CalculationService, private router: Router, private changeDetector: ChangeDetectorRef) {
+  constructor(private fb: FormBuilder, private shiftService: ShiftsService, private locationService: LocationsService, private calculations: CalculationsService, private router: Router, private changeDetector: ChangeDetectorRef) {
     this.initializeDates()
     this.initializeForm();
   }
@@ -258,7 +258,7 @@ export class AddShiftComponent implements OnInit, ViewDidEnter {
 
   async checkLocationBeforeAddShiftToDb(start: Date, end: Date) {
     let inputLocation = this.shiftForm.get('location')?.value;
-    if (inputLocation) {
+    if (inputLocation && inputLocation instanceof Location && inputLocation.id) {
       this.addShiftToDb(inputLocation.id, start, end);
     } else {
       const regex = /^([^\d]+),\s*(.+)$/;

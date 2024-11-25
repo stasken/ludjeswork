@@ -5,7 +5,7 @@ import { DatePipe } from '@angular/common';
 @Injectable({
   providedIn: 'root',
 })
-export class CalculationService {
+export class CalculationsService {
   earningsNetto = 0;
   constructor(private date: DatePipe) { }
 
@@ -187,8 +187,9 @@ export class CalculationService {
         };
       }
 
-      // Start day same day as new end day
-      if (shiftStart.toDateString() === end.toDateString()) {
+      const beforeStart = shiftStart.getTime() - (4 * 60 * 60 * 1000); // shiftEnd + 4 hours
+      const before: boolean = start.getTime() >= beforeStart && start.getTime() <= shiftStart.getTime();
+      if (before) {
         const formattedStartDate = this.date.transform(shift.startdate, 'medium');
         const formattedEndDate = this.date.transform(shift.enddate, 'medium');
         return {
@@ -197,8 +198,9 @@ export class CalculationService {
         };
       }
 
-      // End day same day as new start day
-      if (shiftEnd.toDateString() === start.toDateString()) {
+      const afterEnd = shiftEnd.getTime() + (4 * 60 * 60 * 1000); // end + 4 hours
+      const after: boolean = shiftEnd.getTime() <= start.getTime() && afterEnd >= start.getTime();
+      if (after) {
         const formattedStartDate = this.date.transform(shift.startdate, 'medium');
         const formattedEndDate = this.date.transform(shift.enddate, 'medium');
         return {
