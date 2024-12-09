@@ -5,6 +5,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DocumentsPage } from './documents.page';
 
 import { DocumentsPageRoutingModule } from './documents-routing.module';
+import { DocumentListComponent } from 'src/app/components/documents/document-list/document-list.component';
+import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 
 @NgModule({
   imports: [
@@ -12,8 +14,9 @@ import { DocumentsPageRoutingModule } from './documents-routing.module';
     CommonModule,
     FormsModule,
     DocumentsPageRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AngularFireStorageModule
   ],
-  declarations: [DocumentsPage],
+  declarations: [DocumentsPage, DocumentListComponent],
 })
 export class DocumentPageModule {}
