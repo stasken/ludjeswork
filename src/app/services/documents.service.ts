@@ -14,7 +14,7 @@ export class DocumentsService {
 
     const documentsRef = collection(this.firestore, 'documents');
     const q = query(documentsRef,
-      orderBy('startdate', 'asc'));
+      orderBy('uploaddate', 'asc'));
     const querySnapshot = await getDocs(q);
 
     querySnapshot.forEach((doc) => {
@@ -25,11 +25,9 @@ export class DocumentsService {
     return documentArray; // Return the array of workdays
   }
 
-  // addDocument(this.selectedFile!.name, downloadURL);
-  addDocument(name: string, downloadURL: string) {
+  addDocument(doc: Document) {
     const docRef = collection(this.firestore, "documents")
-    let newDoc = new Document(name, downloadURL)
-    return addDoc(docRef, newDoc)
+    return addDoc(docRef, doc)
   }
 
 }

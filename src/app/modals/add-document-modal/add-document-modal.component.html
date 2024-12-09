@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Document toevoegen</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<div id="add-doc-container">
+  <ion-item>
+    <ion-input #filename label="Naam" label-placement="stacked" placeholder="Geef een naam" [(ngModel)]="fileName"
+      [disabled]="!isImage"></ion-input>
+  </ion-item>
+
+  <div class="buttons">
+    <ion-button>
+      <label for="fileInput" class="button-label">Kies bestand</label>
+      <input type="file" id="fileInput" class="hidden-input" (change)="uploadFile($event)" />
+    </ion-button>
+    <ion-button (click)="captureImage()">Neem foto</ion-button>
+  </div>
+
+  <div class="action-buttons">
+    <ion-button (click)="sendFile()">Voeg toe</ion-button>
+    <ion-button (click)="cancel()">Terug</ion-button>
+  </div>
+</div>

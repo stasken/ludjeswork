@@ -7,6 +7,7 @@ import { DocumentsPage } from './documents.page';
 import { DocumentsPageRoutingModule } from './documents-routing.module';
 import { DocumentListComponent } from 'src/app/components/documents/document-list/document-list.component';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
+import { AddDocumentModalComponent } from 'src/app/modals/add-document-modal/add-document-modal.component';
 
 @NgModule({
   imports: [
@@ -17,6 +18,6 @@ import { AngularFireStorageModule } from '@angular/fire/compat/storage';
     ReactiveFormsModule,
     AngularFireStorageModule
   ],
-  declarations: [DocumentsPage, DocumentListComponent],
+  declarations: [DocumentsPage, DocumentListComponent,AddDocumentModalComponent],
 })
 export class DocumentPageModule {}

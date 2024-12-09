@@ -1,8 +1,7 @@
-<ion-item>
-  <ion-label>Add document</ion-label>
-  <!-- <input type="file" (change)="uploadFile($event)" /> -->
-  <!-- <ion-button (click)="onFileSelected()">xxx</ion-button> -->
-</ion-item>
-<p>{{absoluteFilePath}}</p>
-<!-- <ion-button (click)="uploadFile()">Upload</ion-button> -->
-<!-- <ion-button (click)="sendEmailWithAttachment()">Mail</ion-button> -->
+
+<ion-button (click)="addDocument()">Voeg document toe</ion-button>
+
+<div *ngFor="let doc of documents">
+  <ion-label>{{ doc.name }}</ion-label>
+  <ion-button [disabled]="doc.sent" (click)="sendEmail(doc)">Mail</ion-button>
+</div>

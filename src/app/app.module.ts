@@ -10,10 +10,12 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { DatePipe } from '@angular/common';
 
+import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx'
+
 @NgModule({
   declarations: [AppComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
-  providers: [DatePipe, 
+  providers: [DatePipe, EmailComposer,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, provideFirebaseApp(() => initializeApp({"projectId":"ludjeworks","appId":"1:729179731913:web:b715c4ba53b7c4cf3bda18","storageBucket":"ludjeworks.appspot.com","apiKey":"AIzaSyDz-x0HdvMEMEFXaIa7anSHYt-iqaBaBjs","authDomain":"ludjeworks.firebaseapp.com","messagingSenderId":"729179731913","measurementId":"G-XWRY2JNM71"})), provideFirestore(() => getFirestore())],
   bootstrap: [AppComponent],
 })
