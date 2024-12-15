@@ -153,6 +153,10 @@ export class ShiftListComponent implements OnInit {
     }
   }
 
+  refresh() {
+    this.getAllFutureShifts();
+  }
+  
   deleteShift(shift: ShiftItem) {
     const index = this.currentFilteredShifts.indexOf(shift, 0);
     if (index > - 1) {

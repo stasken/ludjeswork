@@ -11,6 +11,7 @@ import { ShiftItem } from '../shift-list/shift-list.component';
 })
 export class ShiftItemComponent implements OnInit {
   @Input() shift!: ShiftItem;
+  @Output() refreshShiftEmitter = new EventEmitter<any>();
   @Output() updateShiftEmitter = new EventEmitter<any>();
   @Output() deleteShiftEmitter = new EventEmitter<any>();
 
@@ -116,6 +117,7 @@ export class ShiftItemComponent implements OnInit {
           this.updateShiftEmitter.emit(this.shift)
           break;
         case 1:
+          this.refreshShiftEmitter.emit();
           break;
         case 2:
           this.deleteShiftEmitter.emit(this.shift);

@@ -86,6 +86,10 @@ export class StatsComponent implements OnInit {
     this.beginDatetime = this.startPeriod.toISOString();
     this.endDatetime = this.endPeriod.toISOString();
     this.getShiftsForPeriod();
+
+    this.userLocation = "";
+    this.filterLocations(this.userLocation);
+    this.isOpenPopLocation = false;
   }
 
   // BUTTON HANDLERS
