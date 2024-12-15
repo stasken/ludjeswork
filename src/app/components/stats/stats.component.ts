@@ -101,7 +101,7 @@ export class StatsComponent implements OnInit {
   goToNextMonth() {
     this.currentMonth++;
     if (this.currentMonth + 1 == 13) {
-      this.currentMonth = 1;
+      this.currentMonth = 0;
       this.currentYear++;
     }
     this.setCurrentMonthPeriod();
